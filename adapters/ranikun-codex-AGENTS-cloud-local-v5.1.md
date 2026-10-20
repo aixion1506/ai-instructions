@@ -93,7 +93,10 @@
 - **Cloud:** 사용자가 선택한 Cloud Environment(Carelog/Finance/Ranikun-labs), Workspace 경로, 실제 Repository, PR/Base/HEAD 및 GitHub 접근 경로를 확인한다. Environment 이름과 Checkout Branch는 별개다. Workspace의 기본 `work`/base checkout을 발견했다고 곧바로 원격 PR이 소실됐다고 결론내리지 말고 공식 Fetch/Checkout 또는 검증된 전체 Tree Snapshot 복원 가능성을 조사한다. 정확한 Target HEAD를 확보하지 못하면 쓰기를 중단한다.
 - **Local CLI/IDE:** 실제 로컬 파일 시스템·Git Root·현재 Branch/HEAD·Working Tree·Remote와 권한/도구를 기준으로 작업한다. Cloud Environment 선택을 요구하지 않는다. 사용자가 특정 PR/SHA를 지정하면 Remote와 일치 여부를 별도 확인한다. 로컬 Dev Container/WSL/Windows 경로와 설치된 도구/버전을 확인한다.
 - **공통:** 네트워크·권한·Sandbox 차단은 코드 결함과 분리해 보고한다. 승인 없는 우회·특권상승·Force Git 조작 금지. Cloud/Local 간 존재하지 않는 상태·파일·세션 기억을 공유한다고 주장하지 않는다.
-- **설치:** Repository Root `AGENTS.md`를 우선 사용해 Cloud/Local에 동일 정책을 적용한다. 로컬 전체 Repository에 공통 정책을 적용하려면 `~/.codex/AGENTS.md`를 별도로 사용할 수 있지만, 동일 문서를 전역과 Repository에 중복 배치하지 않는다. 기존 파일·하위 디렉터리 Override와 충돌 여부를 확인한다.
+- **Private 정책:** 이 개인/Private 지침·설정은 공개 저장소의 추적 파일에 복사·Commit·Push하지 않는다. 공개 `oh-my-ai`는 공통 하네스·Skills·설치 도구를 소유한다.
+- **적용 전 소유권 확인:** Repository Root 또는 전역 `AGENTS.md` 적용 전 실제 경로, 기존 파일 종류, Symlink와 해석된 Target, 양쪽 소유자·관리 주체 및 생성·관리 상태를 확인한다. 소유권 불명확·충돌이면 설치·덮어쓰기·Symlink 변경을 중단한다.
+- **oh-my-ai 보호:** `oh-my-ai`가 생성·관리하는 전역 `AGENTS.md`, Symlink 및 Target은 통합 설계와 Owner 승인 전 임의 변경하지 않는다.
+- **경로·복구:** Codex의 실제 `CODEX_HOME`과 설치기의 `CODEX_DIR`은 다를 수 있다. 감사된 `setup.sh`는 `CODEX_DIR`(기본 `$HOME/.codex`)을 쓰며 `CODEX_HOME`을 직접 읽지 않는다. 실제 런타임 경로, 설치기 설정·버전을 확인한다. Owner가 명시 승인한 적용에 한해 파일·Target·Symlink Metadata를 백업하고 복구 경로를 검증한다. 승인 전 전역 설치·덮어쓰기를 하지 않는다. 복구 시 후속 변경을 덮어쓰지 않는다.
 
 ## 1. 작업 시작 전 필수 Preflight
 
