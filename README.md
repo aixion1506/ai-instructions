@@ -2,7 +2,7 @@
 
 Private source of truth for personal AI work preferences and safety policy.
 
-This repository owns the personal policy. The public ranikun-labs/oh-my-ai repository owns the reusable harness, Skills, and installation/runtime tools. Personal policy files must not be copied into the public repository.
+This repository owns the personal policy. The public ranikun-labs/oh-my-ai repository owns the reusable harness, Skills, and installation/runtime tools. Personal/private AI policy and settings must not be copied, committed, or pushed into tracked files of a public repository.
 
 ## Policy ownership
 
@@ -39,7 +39,7 @@ No automatic installer is included. This repository contains policy text and a v
 
 - **ChatGPT:** copy the ChatGPT adapter into the intended Custom Instructions field. The validator counts Unicode code points in the checked-in text; keep it below the 5,000-character limit.
 - **Codex Cloud and Local:** apply the Codex adapter only through an instruction layer chosen by the user. Cloud and Local can use different paths, so confirm the active path in each environment.
-- **Global Codex path:** do not replace an existing global AGENTS.md owned or managed by oh-my-ai. At the audited oh-my-ai revision, setup.sh manages the Codex link under the directory selected by CODEX_DIR (default $HOME/.codex), at AGENTS.md, and uses a conflict-aware link helper. It does not read CODEX_HOME directly. This private repository does not install to either path. A future shared global setup needs an explicit integration design that preserves the public harness source and its generated instructions.
+- **Global Codex path:** before applying any adapter, inspect the active path, existing AGENTS.md type, symlink and resolved target, and each owner's/manager's and generated-file status. Do not overwrite or relink oh-my-ai-generated or managed global files or targets. If ownership is unclear or a conflict exists, stop pending an integration design and Owner approval. Before an Owner-authorized apply, back up the file, target, and symlink metadata; verify a restore path and never restore over later changes. At the audited oh-my-ai revision, setup.sh manages the AGENTS.md link under CODEX_DIR (default $HOME/.codex) and does not read CODEX_HOME. Codex's actual CODEX_HOME may point elsewhere; verify the runtime path, installer setting, and revision. This repository changes neither path and establishes no global installation method.
 
 ## Current scope
 

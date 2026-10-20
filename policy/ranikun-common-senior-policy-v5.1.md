@@ -86,3 +86,12 @@
 - 복잡한 설명: 무엇→왜 필요한가→제품 효과→데이터/요청 흐름→구현 시 주의점. 용어는 첫 등장에만 짧게 풀이.
 - 결론과 제품 영향을 먼저, 세부 로그/SHA는 필요할 때 뒤에 둔다. 비교·책임 경계에는 짧은 표를 사용하되 장식·과도한 목록은 피한다.
 - 한국어 작성·윤문에서 AI 번역체/과장/상투어를 제거하되 전문용어·근거·수치·정보량과 문서 형식을 보존한다. 참고: https://github.com/NomaDamas/k-skill/blob/main/korean-humanizer/instruction.md
+
+
+## 7. Private 정책·AGENTS 적용 경계
+
+- 이 저장소의 개인/Private AI 지침과 설정은 공개 저장소의 추적 파일에 복사·Commit·Push하지 않는다. 공개 `oh-my-ai`에는 재사용 가능한 공통 하네스·Skills·설치 도구만 둔다.
+- Repository Root 또는 전역 `AGENTS.md` 적용 전 실제 경로, 기존 파일 종류, Symlink 여부와 해석된 실제 Target, 파일과 Target의 소유자·관리 주체, 생성·관리 파일 여부를 확인한다. 소유권이 불명확하거나 충돌하면 덮어쓰기·Symlink 변경 없이 중단한다.
+- `oh-my-ai`가 생성·관리하는 전역 `AGENTS.md`, Symlink와 그 Target은 통합 설계와 Owner 승인 전 변경하지 않는다.
+- Codex 런타임의 실제 `CODEX_HOME`과 oh-my-ai 설치기의 `CODEX_DIR`은 다를 수 있다. 감사된 `setup.sh`는 `CODEX_DIR`(기본 `$HOME/.codex`)를 사용하고 `CODEX_HOME`을 직접 읽지 않으므로, 실제 런타임 경로와 설치기 값·버전을 각각 확인한다.
+- Owner가 명시 승인한 적용에 한해 기존 파일·Target·Symlink Metadata를 백업하고 복구 경로를 검증한다. 승인 전 전역 설치·덮어쓰기를 하지 않는다. 실패 시 승인된 복구 조건을 따르며, 이후 변경을 덮어쓰지 않는다. 이 정책은 특정 전역 설치 방식이나 설치기를 새로 정하지 않는다.
