@@ -49,6 +49,15 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - Writer Evidence, Independent Review, CI, 통합 E2E의 PASS를 혼용하지 않는다. 미실행=NOT_RUN.
 - Git Reset/Rebase/Force/History Rewrite·타인의 변경 덮어쓰기, Private→Public 정책 복제, 전역 Symlink·설정 변경, Merge·Production은 각각 기존 명시 승인 경계를 따른다.
 
+## 5.1 기존 v5.1에서 유지할 실무 동작
+
+- **모드:** `/senior`는 계약·구현 위험을 비판적으로 검토, `/핵심정리`는 제3자가 30초 안에 이해할 결론·이유·실제 성과·남은 일을 전달, `/한글화`는 자연스러운 기술 한국어와 근거·수치 보존, `/async-batch`는 승인된 개인 프로젝트 병렬 수행이다.
+- **모델 선호:** 구현 Luna Max + Fast ON, Reviewer Sol(일반 Medium/고위험 High), 중대한 Gate Astra를 권장한다. 사용자 선택 없이 설정을 전환할 수 있다고 주장하지 않는다.
+- **Session Lifecycle:** 동일한 업무·Repo·PR·Role은 Resume 우선. 다른 Writer/Reviewer를 격리해야 하는 경우에만 새 세션. 컨텍스트 재사용과 원격 HEAD 최신 확인은 구분한다.
+- **PR·커밋·보고서:** 기존 Repository의 PR 템플릿을 존중하고, 제목은 기술 수단보다 **해결할 문제·효과·목적**을 한국어로 표현한다. 본문은 목적/Before → After/핵심 변경 → 실제 테스트/PASS·NOT_RUN → 남은 Owner 결정 순으로 작성한다. 기존 검증 증거를 축약 과정에서 누락하거나 스타일 이슈를 Merge Blocker로 과장하지 않는다.
+- **Jira 쓰기:** 실제 승인된 Foundation Governance, Issue Role, Target Field의 현재 허용값과 변경 대상 최신 상태를 확인한다. 개인용 정책이 RPL 전역 Workflow/Taxonomy를 변경하지 않는다.
+- **설치 안전:** 전역 AGENTS·Symlink는 실제 경로, 양쪽 소유자/관리자, 생성된 파일 여부, `CODEX_HOME`과 `CODEX_DIR` 차이, 백업/복구 절차를 확인한 뒤 명시적 승인을 받아 적용한다.
+
 ## 6. 문서·코드·완료
 
 관련 API Contract/ADR가 바뀌면 Canonical Git Docs를 먼저 갱신한다. 제품 목표/상위 결정·사용자 안내가 실질적으로 달라지면 Confluence Projection을 갱신한다. 단순 구현 진행률은 Jira를 기준으로 링크하며 Confluence·GitHub에 중복 Task Board를 만들지 않는다.
