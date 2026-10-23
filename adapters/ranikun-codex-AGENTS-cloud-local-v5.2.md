@@ -40,6 +40,7 @@ ChatGPT Web은 Local Hook을 갖는다고 가정하지 않는다. 짧은 Adapter
 
 - 기본적으로 **1 Primary Jira Issue / 1 Writer / 1 Branch / 1 PR**. 다른 세션·PR·Dirty Tree는 덮어쓰지 않는다.
 - 승인된 Writer는 Scope 내 구현·테스트·PR까지 수행한다. 사용자 핵심 도메인 규칙·인가·트랜잭션·멱등·API 의미는 Owner 결정 없이 임의 확정하지 않는다.
+- 구현 전 YOU-CORE/AI-WRITE/REVIEW를 분리한다. **YOU-CORE 핵심 코드는 Owner의 명시적 구현 위임 전 작성 금지**. 그 전에는 Invariant·Pseudocode·Test Criteria·Skeleton만 준비한다. 계약이 승인됐다는 사실만으로 핵심 코드 위임을 추론하지 않는다.
 - 독립 Reviewer는 고정된 Base·HEAD와 실제 증거를 검수하며 GitHub/Jira/Confluence에 Write하지 않는다. 작은 Delta는 표적 재검증, 기존 PASS의 불필요한 전체 반복을 피한다.
 - Source Merge와 Jira Done은 별도 이벤트다. Merge Commit을 확인한 뒤 Jira 완료 근거를 기록한다. PR Close나 Writer 자체 PASS로 Done 처리하지 않는다.
 - 운영 배포·DB Migration/Cutover·Secret 변경·파괴적 Git/Force·Repo 규칙 변경에는 별도 명시 승인이 필요하다.
@@ -55,7 +56,7 @@ ChatGPT Web은 Local Hook을 갖는다고 가정하지 않는다. 짧은 Adapter
 4. Owner가 허용한 Source Merge 후 Jira Merge SHA·결과 갱신.
 5. 중요한 결정·제품/운영 현황이 바뀐 경우에만 Docs/Confluence Projection 갱신.
 
-`/async-batch`는 명시 승인된 **개인 사이드프로젝트**의 독립 작업만 병렬화한다. 실제 도구가 다중 에이전트·백그라운드를 지원하지 않으면 보장하지 않는다. 권한 불충족은 작업별 HOLD. 보고는 제3자 기준 실제 성과·검증·다음 조치만 작성한다.
+`/async-batch`는 명시 호출 또는 해당 작업에 대한 Owner의 명확한 Batch 위임이 있는 **개인 사이드프로젝트**의 독립 작업만 병렬화한다. 실제 도구가 다중 에이전트·백그라운드를 지원하지 않으면 보장하지 않는다. 권한 불충족은 작업별 HOLD. 보고는 제3자 기준 실제 성과·검증·다음 조치만 작성한다.
 
 ### 작성 기준 — 기술 구현보다 해결 효과를 먼저
 

@@ -44,6 +44,7 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - 결론 먼저: 현행 승인 계약/실제 코드/검증 근거와 새로운 권고·Owner 결정을 구분한다.
 - YOU-CORE: 핵심 제품 규칙, 인가·Visibility, 트랜잭션·동시성·멱등성, 중요한 SQL/Repository 조건과 실패·복구 Semantics는 Owner가 이해·승인할 계약이다.
 - AI-WRITE: 계약이 명확한 Adapter/DTO/CRUD Wiring, 반복 테스트·Fixture, 기계적 결함 수정 등을 명시 범위에서 지원한다. 승인 전 중요한 도메인 의미를 추정하여 고치지 않는다.
+- **핵심 구현 위임 경계:** 구현 전 YOU-CORE/AI-WRITE/REVIEW를 구분한다. YOU-CORE 핵심 코드는 Owner의 **명시적 구현 위임 전 작성 금지**. 그 전 허용 산출물은 **Invariant·Pseudocode·Test Criteria·Skeleton**까지이며, AI 제안은 Owner의 제품 결정을 대체하지 않는다.
 - Fast Lane: 오타·문서·일반 Feature·작은 Bug는 핵심 Diff와 해당 테스트 중심으로 검토한다.
 - Deep Lane: Auth·Secret·개인정보·DB Migration·동시성·Cross-repo Contract·Shared Platform·배포는 보안·장애·롤백·통합 영향을 확인한다.
 - Writer Evidence, Independent Review, CI, 통합 E2E의 PASS를 혼용하지 않는다. 미실행=NOT_RUN.
@@ -62,7 +63,7 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 
 관련 API Contract/ADR가 바뀌면 Canonical Git Docs를 먼저 갱신한다. 제품 목표/상위 결정·사용자 안내가 실질적으로 달라지면 Confluence Projection을 갱신한다. 단순 구현 진행률은 Jira를 기준으로 링크하며 Confluence·GitHub에 중복 Task Board를 만들지 않는다.
 
-`/async-batch`는 명시 호출된 개인 프로젝트에서만 승인된 독립 업무를 병렬화한다. 1 Primary Jira = 1 Writer = 1 Branch/PR을 기본값으로 한다. 권한/의존성 문제는 해당 항목만 HOLD하고 실사용 도구가 지원하지 않는 병렬/백그라운드 실행은 주장하지 않는다. 보고는 제3자 기준 **한 일·검증·실제 완료·다음 행동**만 간결히 정리한다.
+`/async-batch`는 개인 사이드프로젝트에서 명시 호출하거나 해당 작업의 Batch 위임을 Owner가 명확히 승인했을 때만 활성화한다. 회사 업무·일반 개발에 자동 적용하지 않는다. 1 Primary Jira = 1 Writer = 1 Branch/PR을 기본값으로 한다. 권한/의존성 문제는 해당 항목만 HOLD하고 실사용 도구가 지원하지 않는 병렬/백그라운드 실행은 주장하지 않는다. 보고는 제3자 기준 **한 일·검증·실제 완료·다음 행동**만 간결히 정리한다.
 
 ## 7. 적용·검증 경계
 
