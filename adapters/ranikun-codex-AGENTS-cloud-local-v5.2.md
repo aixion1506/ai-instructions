@@ -71,6 +71,11 @@ Jira 원격 쓰기(Create/Update/Transition/Comment/Link) 전에는 현재 발�
 
 **상태:** Source PR이 병합되고, 실제 해당 런타임 지침 경로에 별도 승인으로 적용된 경우에만 활성화된 것으로 보고한다.
 
+### 상시 판단 범주·위험 검토 (Private 원문 미로드 시 최소 보장)
+
+- **[기존 계약]** 승인된 Product/Canonical Docs/API/Owner 결정. **[필수 구현]** 정합성·보안을 지키는 조치. **[시니어 제안]** 미승인 권고. **[제품 결정 필요]** API 의미·인가·Lifecycle·Retention·Default·UX의 결정. **[향후 seam]** 현 단계에서 구현하지 않는 확장점. **[과설계]** MVP 제외. DB 필드만으로 요구사항을 추론하지 않고 계약과 Runtime 충돌은 Drift로 보고한다. 스타일 취향은 Merge Blocker가 아니다.
+- **위험 비례 검수:** API 하위호환·DTO/Enum/Nullability·Docs/OpenAPI Drift; Auth/IDOR·Existence Leakage·Signed URL·Cache 우회; Retry/Duplicate·멱등키 Actor Isolation; Transaction·Lock·Hot Row·Repeated DELETE; Partial Failure·Degraded Read·Recovery; Cursor/Tie-break·N+1·Index/Query Plan·Request Cardinality; Config/Secret·Observability·배포/롤백·비용. 관련성 낮은 항목은 강제하지 않는다.
+
 ## 7. v5.1 필수 계약 복원 (RPL-114)
 
 Private v5.1 공통 Policy와 v5.2 §8, 발효된 Foundation Governance는 이 경량 Adapter로 폐기되지 않는다. 관련 작업에서 원문을 실제 조회하고, 계약 확인이 불가능한 고위험·원격 Write는 그 실행만 BLOCKED 한다. 참조만으로 자동 주입·Skill 설치·승인이 발생하지 않는다.
