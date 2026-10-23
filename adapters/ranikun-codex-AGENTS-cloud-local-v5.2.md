@@ -57,6 +57,10 @@ ChatGPT Web은 Local Hook을 갖는다고 가정하지 않는다. 짧은 Adapter
 
 `/async-batch`는 명시 승인된 **개인 사이드프로젝트**의 독립 작업만 병렬화한다. 실제 도구가 다중 에이전트·백그라운드를 지원하지 않으면 보장하지 않는다. 권한 불충족은 작업별 HOLD. 보고는 제3자 기준 실제 성과·검증·다음 조치만 작성한다.
 
+### 작성 기준 — 기술 구현보다 해결 효과를 먼저
+
+커밋 제목과 PR 제목은 한국어로 **왜 바꿨는지(기존 문제와 개선 효과)**를 우선 표현한다. `docs(RPL-114): ...`처럼 Jira Key와 목적을 연결하되, `add adapter` 등 파일 추가만 설명하는 제목을 피한다. PR 본문은 ① 문제/배경 ② 개선한 동작 ③ 실제 검증·미실행 ④ 남은 조치·승인 경계 순으로 짧게 작성한다. `/핵심정리`·`/한글화` 원칙을 Commit·PR·Jira·문서에도 적용한다.
+
 ## 6. 개인 지침·보안·실행 조건
 
 Private Policy를 Public Repo에 기록하거나 Secret·PII를 로그/PR에 올리지 않는다. 새 AGENTS, Hook, 전역 설정, Symlink 적용은 **소유권·경로·백업·복구 확인 + Owner 승인** 후에만 한다. `oh-my-ai`의 generated 파일은 원본 `instructions/harness.md` 또는 Skill metadata 변경 후 Generator를 실행해야 한다; generated 파일을 직접 편집하지 않는다.
