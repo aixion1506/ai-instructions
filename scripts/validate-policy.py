@@ -1,91 +1,71 @@
 #!/usr/bin/env python3
-"""Read-only structural checks for the private personal-policy repository."""
-
+"""Validate the proposed private v5.2 policy set; do not install it."""
 from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = {
-    "common_policy": ROOT / "policy/ranikun-common-senior-policy-v5.1.md",
-    "chatgpt_adapter": ROOT / "adapters/ranikun-chatgpt-custom-instructions-v5.1.txt",
-    "codex_adapter": ROOT / "adapters/ranikun-codex-AGENTS-cloud-local-v5.1.md",
+ACTIVE = {
+    "common": ROOT / "policy/ranikun-common-senior-policy-v5.2.md",
+    "chatgpt": ROOT / "adapters/ranikun-chatgpt-custom-instructions-v5.2.txt",
+    "codex": ROOT / "adapters/ranikun-codex-AGENTS-cloud-local-v5.2.md",
 }
-MAX_CHATGPT_CODEPOINTS = 5000
-REQUIRED_MARKERS = {
-    "common_policy": (
-        "Jira Governance",
-        "PR Authoring",
-        "모델 라우팅",
-        "Spec-to-Implementation",
-        "Session Lifecycle",
-    ),
-    "chatgpt_adapter": (
-        "[Model Policy]",
-        "Luna Max + Fast ON",
-        "[Jira Governance / Write Gate]",
-        "[PR Authoring]",
-        "[Spec → Implementation]",
-        "[Session Lifecycle]",
-        "/async-batch",
-        "[Private Policy / AGENTS Gate]",
-        "개인/Private 지침·설정의 공개 저장소 추적 파일 복사·Commit·Push 금지",
-        "AGENTS.md 적용 전 실제 경로·파일 종류·Symlink·해석 Target",
-        "양쪽 소유자/관리자·생성/관리 상태 확인",
-        "불명확·충돌 시 설치·덮어쓰기·링크 변경 중단",
-        "oh-my-ai 관리 전역 파일·링크·Target 변경은 통합 설계·Owner 승인 필수",
-        "런타임 CODEX_HOME·설치기 CODEX_DIR은 별개",
-        "각각 경로·설정·버전 확인",
-        "CODEX_HOME 미참조",
-        "명시적 Owner 승인·파일/Target/링크 Metadata 백업·복구 경로 검증 후만 적용",
-        "승인 전 전역 설치 금지·복구 시 후속 변경 보존",
-    ),
-    "codex_adapter": (
-        "Jira Governance / CRUD WRITE Gate",
-        "Luna Max + Fast ON",
-        "PR Authoring",
-        "모델 라우팅",
-        "Spec-to-Implementation",
-        "Session Lifecycle",
-    ),
+HISTORY = [
+    ROOT / "policy/ranikun-common-senior-policy-v5.1.md",
+    ROOT / "adapters/ranikun-chatgpt-custom-instructions-v5.1.txt",
+    ROOT / "adapters/ranikun-codex-AGENTS-cloud-local-v5.1.md",
+]
+REQUIRED = {
+    "common": ["RPL-114", "Jira-first", "Confluence", "ChatGPT Web", "Codex Cloud",
+               "Codex Local", "Claude Code", "Independent Review", "Owner"],
+    "chatgpt": ["[업무 시작 — Jira-first]", "[정본·컨텍스트 — 필요할 때만]",
+                "[Personal AI / Runtime]", "[개발 검증·승인]", "Confluence",
+                "Source Merge", "/async-batch", "/핵심정리", "NOT_RUN"],
+    "codex": ["RPL-114", "Jira-first", "Codex Cloud", "Codex Local",
+              "ChatGPT", "Claude", "Confluence", "Independent Review",
+              "Source Merge", "NOT_RUN"],
 }
+HARD_CHATGPT_LIMIT = 5000
+BUDGET_CHATGPT = 3500
 
 
 def main() -> int:
     errors = []
     loaded = {}
-    for name, path in FILES.items():
-        if not path.is_file():
-            errors.append(f"missing file: {path.relative_to(ROOT)}")
-            continue
+    for name, path in ACTIVE.items():
         try:
             loaded[name] = path.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            errors.append(f"not valid UTF-8: {path.relative_to(ROOT)}")
-
-    for name, markers in REQUIRED_MARKERS.items():
+        except (OSError, UnicodeDecodeError) as exc:
+            errors.append(f"unreadable active file {path.relative_to(ROOT)}: {exc}")
+    for path in HISTORY:
+        if not path.is_file():
+            errors.append(f"missing preserved v5.1 file: {path.relative_to(ROOT)}")
+    for name, markers in REQUIRED.items():
         text = loaded.get(name)
         if text is None:
             continue
         for marker in markers:
             if marker not in text:
-                errors.append(f"missing marker in {name}: {marker}")
+                errors.append(f"missing {name} contract marker: {marker}")
+        if not text.endswith("\n"):
+            errors.append(f"missing final newline: {name}")
 
-    chatgpt = loaded.get("chatgpt_adapter")
+    chatgpt = loaded.get("chatgpt")
     if chatgpt is not None:
-        count = len(chatgpt)
-        if count > MAX_CHATGPT_CODEPOINTS:
-            errors.append(
-                f"ChatGPT adapter is {count} Unicode code points; limit is {MAX_CHATGPT_CODEPOINTS}"
-            )
-        print(f"ChatGPT adapter: {count}/{MAX_CHATGPT_CODEPOINTS} Unicode code points")
+        length = len(chatgpt)
+        print(f"ChatGPT v5.2: {length}/{HARD_CHATGPT_LIMIT} Unicode code points")
+        if length > HARD_CHATGPT_LIMIT:
+            errors.append(f"ChatGPT limit exceeded: {length}")
+        if length > BUDGET_CHATGPT:
+            errors.append(f"ChatGPT lean budget exceeded: {length}")
+    for name, text in loaded.items():
+        print(f"{name} v5.2: {len(text)} Unicode code points")
 
     if errors:
-        print("Policy validation: FAIL")
+        print("Private policy v5.2 validation: FAIL")
         for error in errors:
             print(f"- {error}")
         return 1
-
-    print("Policy validation: PASS")
+    print("Private policy v5.2 validation: PASS (static contract only)")
     return 0
 
 
