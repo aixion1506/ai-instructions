@@ -4,6 +4,24 @@ Private source of truth for personal AI work preferences and safety policy.
 
 This repository owns the personal policy. The public ranikun-labs/oh-my-ai repository owns the reusable harness, Skills, and installation/runtime tools. Personal/private AI policy and settings must not be copied, committed, or pushed into tracked files of a public repository.
 
+## v5.2 — Lean cross-runtime proposal (RPL-114)
+
+**Status:** Review candidate on a feature branch; v5.1 remains the applied reference until a separate source merge and explicit runtime installation. This PR does **not** modify live ChatGPT Custom Instructions, Codex/Claude global files, runtime hooks, or the public oh-my-ai repository.
+
+| Layer | v5.2 candidate | Design |
+| --- | --- | --- |
+| Common normative source | `policy/ranikun-common-senior-policy-v5.2.md` | Jira-first development; context reuse; risk-aware verification and permissions |
+| ChatGPT Web | `adapters/ranikun-chatgpt-custom-instructions-v5.2.txt` | Thin always-on instructions; under 3,500 Unicode code points, hard max 5,000 |
+| Codex Cloud / Local | `adapters/ranikun-codex-AGENTS-cloud-local-v5.2.md` | Capability-aware execution; local hooks optional, not assumed in Cloud/Web |
+| Runtime-neutral reusable Skills | `ranikun-labs/oh-my-ai` | Shared process/Skill source and supported local execution, not the private policy authority |
+| Work trace | Jira `RPL-114` | Source, review, and runtime-installation gates tracked separately |
+
+**Common workflow:** Check/reuse relevant Jira Issue → Design → Analyze applicable Canonical Docs/Code → Implement → Risk-appropriate review → Merge → Jira completion evidence. Only fetch needed Skills/Docs when context is missing, stale, or changed; always refresh mutable targets immediately before a write. Docs repo and Confluence are updated when architecture/contract or important product decisions materially change, not at every step.
+
+**Boundaries:** GitHub source PR merge is not a ChatGPT/Codex runtime settings change. Previous v5.1 policy and adapters are kept unchanged for comparison and rollback. If a runtime cannot fetch private sources or use local hooks, use its connected tools/manual procedure and state the gap; never claim silent automatic injection.
+
+**Validation:** Run `python3 scripts/validate-policy.py` on this PR branch. It checks v5.2's required behavior, ChatGPT character budget, and continued presence of v5.1. Git/CI source validation does not prove runtime installation.
+
 ## Policy ownership
 
 | Layer | Owner | Role |
@@ -43,7 +61,7 @@ No automatic installer is included. This repository contains policy text and a v
 
 ## Current scope
 
-The v5.1 files are the active policy set. The supplied v4 files and original v5.1 README are archived under migration/archive/. The v5.1 README described the private repository as not yet created; that status is superseded by this repository.
+The v5.1 files remain the current applied reference. v5.2 is proposed, not installed or activated. The supplied v4 files and original v5.1 README are archived under migration/archive/. The v5.1 README described the private repository as not yet created; that status is superseded by this repository.
 
 The source documents identify spec-to-implementation as a planned Skill. In the audited oh-my-ai checkout, that Skill is absent; do not assume that a GitHub policy file installs or invokes it. Reusable procedures remain the public harness's responsibility.
 
