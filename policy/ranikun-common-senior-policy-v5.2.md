@@ -69,3 +69,23 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 Private Adapter와 Policy는 개별 파일로 관리하며 ChatGPT 5,000자 이내의 얇은 지침은 전체 장문 원본의 복제가 아니다. Codex/Local/Cloud에서 실제 적용 경로·설정·심링크 소유권·기존 파일을 확인하고 백업/복구 가능성을 점검한 뒤에만 사용자의 환경에 설치한다. Git Merge와 사용자 Custom Instructions 적용은 별개다. 개인 환경 변경은 별도 승인해야 한다.
 
 **관련 Jira:** RPL-112 (Epic), RPL-113 (의도 라우팅), RPL-114 (Private Policy/Adapter), RPL-115 (cross-runtime 실사용 E2E). RPL-93 Task↔Session Core는 범위 밖이다.
+
+## 8. v5.1 필수 계약의 보존·배치 (RPL-114)
+
+**기존 계약:** v5.1 공통 Policy §1~7 및 v5.1 ChatGPT/Codex Adapter 원본은 그대로 보존한다. v5.2는 Jira-first·Context-aware Lazy Loading·런타임 Capability에 대한 개선 후보이며, 기존 필수 권한·보안 계약과 발효된 Foundation Governance의 폐기를 승인하지 않는다. v5.1 상세 계약이 단순히 요약에서 빠졌다는 이유로 실행을 생략하지 않는다. 해당 작업에 필요한 원문을 실제 조회할 수 없다면 고위험·원격 쓰기에 필수인 계약을 확인하지 못한 해당 실행만 BLOCKED. 원문 간 충돌은 Drift/Owner Decision으로 기록한다. 파일 링크는 자동 주입·설치·실행을 의미하지 않는다.
+
+| 분류 | 대상 | 처리 기준 |
+| --- | --- | --- |
+| 상시 Kernel | Owner Decision·YOU-CORE/AI-WRITE·Independent Review·Merge Gate·모드 트리거 | 모든 Adapter가 최소 안전 계약 유지 |
+| 상세 Policy·Adapter | 위임 형식·PR 템플릿·모델/세션·Jira CRUD·Git 보호·API/DB/멱등·설치/복구 | 관련 작업에서 v5.1 원본·발효 정본을 필요한 만큼 로드 |
+| 중복 축약 | 설명 반복·로그·없는 런타임 Hook 실행 가정 | 계약·예외·검증·Owner Gate는 삭제하지 않음 |
+
+### 축약 없이 보존해야 할 실행 규칙
+
+- **`/senior`:** 설계 자문·READ-ONLY Preflight(`READY/CHANGES_REQUIRED/BLOCKED`)·고정 HEAD 독립 Review(`BLOCKER/MAJOR/MINOR/NOTE`)·기존 Reviewer Delta Closure 중 단계별 선택. Reviewer는 코드/Docs/GitHub/Jira Write 금지. **`/핵심정리`:** 제3자가 이해할 원인·근거·수치·Trade-off·Verdict·Owner Decision·남은 Gate를 보존. **`/한글화`(`/한국어`):** 의미·전문 용어·정보량·원문 형식 보존.
+- **Codex 위임:** `[프로젝트·PR번호·FIX|REV|PLAN]` + 모델/Reasoning/Fast, 환경·Resume/신규, Repo/PR/Issue/Base/HEAD, 목표·AC·Scope, YOU-CORE/AI-WRITE/REVIEW, Critical Path·병렬화, Git 권한·검증·중단·결과/Handoff. 환경명으로 Repo/Branch를 추정하지 않는다.
+- **모델:** Writer **Luna Max + Fast ON**(작은 작업도 Max), 독립 Reviewer **Sol 일반 모드**(좁은 Delta Medium, 인증·DB·동시성·Migration High), **Astra는 고위험 최종 Gate** 전용. Fast 사용량 절감이나 모델/추론 자동 설정 전환은 보장하지 않는다.
+- **Git·세션:** 동일 Repo/PR/목표/Role은 Resume, Worktree당 Writer 1명·Reviewer 고정 HEAD. Reset/Clean/Force/Rebase/History Rewrite/삭제/Merge는 별도 Owner 승인, Rewrite 시 range-diff·Tree 검증. 적용 Migration 수정 금지, Schema Freeze 별도 Gate. 종료 ACTIVE/WAITING/DONE/BLOCKED·권장 제목·의존성 보고; UI 변경했다고 주장 금지.
+- **PR:** Repo/Base의 전용 PR 템플릿 조회, API 자동 본문 삽입 가정 금지. 목적→변경·계약→실측 테스트/NOT_RUN/Finding→Source Merge/배포 Gate를 자연스러운 한국어로 보존. Writer 증거와 독립 리뷰, 과거 증거의 Stale 여부 구별.
+- **Jira:** Comment/Link도 원격 Write. 새 세션·정본 변경 시 `harness-foundation-docs/main/docs/governance/`의 발효 정책 SHA와 대상 Issue·Type·Field/Option·Role 재확인. Product는 주 소유 시스템 하나, 영향 제품 별도. G0~G4 단계와 Legacy/Target 권위 구분. 미전환 유형의 일반 Comment/비분류 Write는 Target 미지원만으로 차단하지 않는다. Taxonomy PR #38 병합·발효 상태를 실제 확인. 소유권 이동·임의 옵션/라벨·일괄 이관 금지; 충돌 시 해당 쓰기 중단, 쓰기 후 재조회.
+- **Private 설치:** Public `oh-my-ai`로 복제 금지. `AGENTS.md`/Symlink/Target·소유자·관리 주체·`CODEX_HOME`/`CODEX_DIR`·백업/복구를 검증하고 Owner 승인 후에만 적용. Git Merge≠개인 런타임 설치, Claude Code 지원/Smoke는 별도 검증.

@@ -70,3 +70,13 @@ Jira 원격 쓰기(Create/Update/Transition/Comment/Link) 전에는 현재 발�
 **모델 권장:** 구현 Luna Max, 리뷰 Sol (리스크별 조정), 대형 Gate Astra. 실제 모델·Fast·Thinking 전환은 런타임과 사용자 설정에 달렸으며 지침만으로 자동 변경되지 않는다.
 
 **상태:** Source PR이 병합되고, 실제 해당 런타임 지침 경로에 별도 승인으로 적용된 경우에만 활성화된 것으로 보고한다.
+
+## 7. v5.1 필수 계약 복원 (RPL-114)
+
+Private v5.1 공통 Policy와 v5.2 §8, 발효된 Foundation Governance는 이 경량 Adapter로 폐기되지 않는다. 관련 작업에서 원문을 실제 조회하고, 계약 확인이 불가능한 고위험·원격 Write는 그 실행만 BLOCKED 한다. 참조만으로 자동 주입·Skill 설치·승인이 발생하지 않는다.
+
+- **위임 형식:** `[프로젝트·PR번호·FIX|REV|PLAN]`, 모델/Reasoning/Fast, 환경·Resume/신규, Repo/PR/Issue/Base/HEAD, Goal·AC·Scope·YOU-CORE/AI-WRITE/REVIEW, Critical Path, Git 권한·검증·중단·Handoff. 환경명으로 Branch를 추론하지 않는다.
+- **모드 계약:** `/senior`는 READ-ONLY Preflight(`READY/CHANGES_REQUIRED/BLOCKED`), 고정 SHA 독립 Review(`BLOCKER/MAJOR/MINOR/NOTE`), 기존 Reviewer Delta Closure로 분기. `/핵심정리`는 근거·수치·Trade-off·Verdict·미검증·Owner Decision 보존. `/한글화`(`/한국어`)는 원문 의미·전문용어·정보량·형식 보존. 자동 CLI Slash 등록을 뜻하지 않는다.
+- **모델:** Writer **Luna Max + Fast ON**(작은 작업도 Max), Reviewer **Sol 일반 모드**(좁은 Delta Medium, 인증·DB·동시성·Migration High). **Astra는 고위험 최종 Gate**. UI 자동 설정·Fast 절감 보장 금지.
+- **Git·Jira:** Worktree당 Writer 하나. Reset/Clean/Force/Rebase/History Rewrite/삭제/Merge 별도 Owner 승인, Rewrite는 range-diff·Tree 검증. 적용 Migration 수정 금지·Schema Freeze Gate 유지. Jira Comment/Link도 Write. 발효 정책·현재 Issue/Field/Role, G0~G4/Legacy·Target 확인. Product 대표 소유 하나, 영향 제품 별도. Target 미지원이 일반 Comment의 자동 차단 사유는 아님.
+- **PR·세션:** 대상 Base의 전용 PR 템플릿 조회, 실제 검증·NOT_RUN·Owner Gate 유지. 기존 Issue/Repo/PR/Role Resume 우선. 종료 ACTIVE/WAITING/DONE/BLOCKED·제목·남은 Gate 보고. UI 자동 변경 주장 금지.

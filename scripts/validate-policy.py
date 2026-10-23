@@ -2,6 +2,7 @@
 """Read-only structural checks for the private personal-policy repository."""
 
 from pathlib import Path
+import hashlib
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -96,14 +97,18 @@ V52_FILES = {
     "codex": ROOT / "adapters/ranikun-codex-AGENTS-cloud-local-v5.2.md",
 }
 V52_MARKERS = {
-    "common": ("RPL-114", "Jira-first", "Confluence", "Context-aware Lazy Loading",
+    "common": ("RPL-114", "v5.1 필수 계약의 보존", "Jira-first", "Confluence", "Context-aware Lazy Loading",
                "Independent Review", "/핵심정리", "/한글화", "Luna Max", "CODEX_DIR"),
-    "chatgpt": ("[업무 시작 — Jira-first]", "[정본·컨텍스트 — 필요할 때만]",
+    "chatgpt": ("[판단·검토 계약]", "[Codex 위임·Git]", "[업무 시작 — Jira-first]", "[정본·컨텍스트 — 필요할 때만]",
                 "[커밋·PR 문장]", "[모델·세션]", "Confluence", "/async-batch", "NOT_RUN"),
-    "codex": ("Jira-first", "Codex Cloud", "Codex Local", "ChatGPT",
+    "codex": ("v5.1 필수 계약 복원", "Luna Max + Fast ON", "Jira-first", "Codex Cloud", "Codex Local", "ChatGPT",
               "독립 Reviewer", "Confluence", "성과", "Source Merge", "NOT_RUN"),
 }
 LEAN_CHATGPT_BUDGET = 3500
+MIN_CHATGPT_BUDGET = 3000
+# Exact Git blob identities of the three approved v5.1 originals.
+V51_GIT_BLOBS = {"common_policy":"ddecdc225d4f0588bd6975c71d179187efc924ec","chatgpt_adapter":"e8eb8f1db5f1e8b15757d743e018b1f0c2bc07b5","codex_adapter":"ac7f334cb4df9cbc55d4f87a01e5a9773b84c799"}
+
 
 
 def validate_v52() -> int:
@@ -122,10 +127,21 @@ def validate_v52() -> int:
         if name == "chatgpt":
             size = len(source)
             print(f"ChatGPT v5.2 adapter: {size}/{MAX_CHATGPT_CODEPOINTS} code points")
+            if size < MIN_CHATGPT_BUDGET:
+                errors.append(f"ChatGPT v5.2 below coverage budget: {size}")
             if size > LEAN_CHATGPT_BUDGET:
                 errors.append(f"ChatGPT v5.2 exceeds lean budget: {size}")
             if size > MAX_CHATGPT_CODEPOINTS:
                 errors.append(f"ChatGPT v5.2 exceeds platform limit: {size}")
+    for name, expected in V51_GIT_BLOBS.items():
+        path = FILES[name]
+        if not path.is_file():
+            continue  # The v5.1 main() check already reports missing files.
+        raw = path.read_bytes()
+        prefix = b"blob " + str(len(raw)).encode("ascii") + bytes([0])
+        actual = hashlib.sha1(prefix + raw).hexdigest()
+        if actual != expected:
+            errors.append(f"v5.1 original modified: {path.relative_to(ROOT)}")
     if errors:
         print("v5.2 extension validation: FAIL")
         for error in errors:
