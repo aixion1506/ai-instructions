@@ -1,0 +1,28 @@
+name: Private AI policy validation
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/validate-policy.yml'
+      - 'scripts/validate-policy.py'
+      - 'policy/**'
+      - 'adapters/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-policy:
+    name: Validate v5.1 and v5.2 policy contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout pull request source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check Python syntax
+        run: python3 -m py_compile scripts/validate-policy.py
+      - name: Validate preserved policy and adapter
+        run: python3 scripts/validate-policy.py
