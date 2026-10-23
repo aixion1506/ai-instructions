@@ -66,3 +66,9 @@ The v5.1 files remain the current applied reference. v5.2 is proposed, not insta
 The source documents identify spec-to-implementation as a planned Skill. In the audited oh-my-ai checkout, that Skill is absent; do not assume that a GitHub policy file installs or invokes it. Reusable procedures remain the public harness's responsibility.
 
 No runtime installation or settings update is recorded by this change.
+
+## RPL-114 v5.1 → v5.2 정책 보존 기준
+
+v5.2는 기존 v5.1의 필수 계약을 삭제하는 새 정책이 아니라, Jira-first·맥락 재사용·런타임별 실행 차이를 추가하는 **검토 후보**다. v5.1 공통·ChatGPT·Codex 원본은 Git blob SHA로 보존한다. v5.2 Policy §8에서 상시 Kernel, 위험 기반 상세 조회, 단순 중복 제거를 구분한다. ChatGPT 상시 지침은 3,000~3,500자 범위이며 Codex의 실행 세부 계약은 별도 Adapter에 둔다.
+
+Validator는 원본 SHA와 양 버전의 핵심 표지·문자 수를 검사하는 **구조 검증**이다. Python 실행 성공만으로 정책 의미 동등성, 독립 Review, ChatGPT/Codex/Claude 실제 설치를 입증하지 않는다. Native Validator 결과와 런타임 Smoke를 별도 기록한다.
