@@ -21,7 +21,7 @@ REQUIRED = {
                 "[Personal AI / Runtime]", "[개발 검증·승인]", "Confluence",
                 "Source Merge", "/async-batch", "/핵심정리", "NOT_RUN"],
     "codex": ["RPL-114", "Jira-first", "Codex Cloud", "Codex Local",
-              "ChatGPT", "Claude", "Confluence", "Independent Review",
+              "ChatGPT", "Claude", "Confluence", "독립 Reviewer",
               "Source Merge", "NOT_RUN"],
 }
 HARD_CHATGPT_LIMIT = 5000
