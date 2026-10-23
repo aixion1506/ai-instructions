@@ -97,11 +97,11 @@ V52_FILES = {
     "codex": ROOT / "adapters/ranikun-codex-AGENTS-cloud-local-v5.2.md",
 }
 V52_MARKERS = {
-    "common": ("RPL-114", "v5.1 필수 계약의 보존", "Jira-first", "Confluence", "Context-aware Lazy Loading",
+    "common": ("RPL-114", "v5.1 필수 계약의 보존", "명시적 구현 위임 전 작성 금지", "Invariant·Pseudocode·Test Criteria·Skeleton", "Jira-first", "Confluence", "Context-aware Lazy Loading",
                "Independent Review", "/핵심정리", "/한글화", "Luna Max", "CODEX_DIR"),
-    "chatgpt": ("[판단·검토 계약]", "[Codex 위임·Git]", "[기존 계약]", "[과설계]", "CODEX_HOME", "range-diff", "[업무 시작 — Jira-first]", "[정본·컨텍스트 — 필요할 때만]",
+    "chatgpt": ("명시적 구현 위임 전 작성 금지", "Invariant·Pseudocode·Test Criteria·Skeleton", "[판단·검토 계약]", "[Codex 위임·Git]", "[기존 계약]", "[과설계]", "CODEX_HOME", "range-diff", "[업무 시작 — Jira-first]", "[정본·컨텍스트 — 필요할 때만]",
                 "[커밋·PR 문장]", "[모델·세션]", "Confluence", "/async-batch", "NOT_RUN"),
-    "codex": ("v5.1 필수 계약 복원", "[기존 계약]", "[필수 구현]", "[제품 결정 필요]", "API 하위호환", "Auth/IDOR", "Luna Max + Fast ON", "Jira-first", "Codex Cloud", "Codex Local", "ChatGPT",
+    "codex": ("v5.1 필수 계약 복원", "명시적 구현 위임 전 작성 금지", "Invariant·Pseudocode·Test Criteria·Skeleton", "[기존 계약]", "[필수 구현]", "[제품 결정 필요]", "API 하위호환", "Auth/IDOR", "Luna Max + Fast ON", "Jira-first", "Codex Cloud", "Codex Local", "ChatGPT",
               "독립 Reviewer", "Confluence", "성과", "Source Merge", "NOT_RUN"),
 }
 LEAN_CHATGPT_BUDGET = 3500
