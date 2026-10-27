@@ -22,6 +22,8 @@
 
 관련 Docs만 선택해서 읽는다. 계약·소유권 변경은 해당 Git Docs를, 상위 결정·제품 목표 변경은 Confluence를 필요에 따라 갱신한다. Jira Issue의 진행 상태를 세 도구에 중복 복사하지 않는다.
 
+**문서 계층 배치:** 상위 로드맵은 목표·방향·핵심 상태와 하위 링크만, 기존 하위는 주제별 설계·검증·절차, 새 하위는 중복되지 않는 독립 책임·시점별 실행/인계에만 사용한다. 먼저 기존 하위와 Source/Target Version을 조회하고 권한·중복·동시 편집 충돌을 확인한다. Git/Jira의 정본 변경은 소유 Writer·Owner Gate로 라우팅하며, Confluence Projection을 자동 정본으로 승격하지 않는다.
+
 ## 3. 런타임별 Capability-aware 실행
 
 ### Codex Cloud
@@ -68,7 +70,9 @@ Private Policy를 Public Repo에 기록하거나 Secret·PII를 로그/PR에 올
 
 Jira 원격 쓰기(Create/Update/Transition/Comment/Link) 전에는 현재 발효된 Foundation Governance와 대상 이슈·허용 필드·Role을 확인하고, 쓰기 후 재조회한다. 리뷰·감사 역할은 Jira/Repo 쓰기를 하지 않는다.
 
-**모델 권장:** 구현 Luna Max, 리뷰 Sol (리스크별 조정), 대형 Gate Astra. 실제 모델·Fast·Thinking 전환은 런타임과 사용자 설정에 달렸으며 지침만으로 자동 변경되지 않는다.
+**F4 모델·Fast 개인 선택:** 작은 구현·경량 검토·표적 테스트는 `gpt-6-luna` / `max` / Fast `ON`; 분석·설계·무거운 독립 검토는 `gpt-6-sol` / `low`(좁은 조사)·`medium`(다중 파일/의존성)·`high`(보안·Governance·아키텍처) / Fast `OFF`를 요청한다. 대형 최종 Gate에서의 Astra 권고는 유지한다. 실제 모델·Fast·Thinking 전환은 지원 Runtime의 선택·설정에 의존한다.
+
+**실제 Task 생성 계약:** 표시 제목은 `[업무 대상] + [끝낼 결과] + [PR/Jira]`이고 `F4-NEXT-BATCH`·`Task A` 등 내부 메타 제목을 노출하지 않는다. 지원되는 실행기에서만 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira/Branch/Base/HEAD`를 생성 인자로 전달하고, `requested_*`와 실제 `effective_*` 및 확인 근거를 분리해 보고한다. UI 수락만 확인되면 `effective: UNKNOWN`, 설정 전달 불가 시 `ROUTING_UNVERIFIED`로 종료·인계한다. 기존 실행 Task는 임의 재시작·중복 생성 금지. Reviewer는 별도 Context/READ-ONLY.
 
 **상태:** Source PR이 병합되고, 실제 해당 런타임 지침 경로에 별도 승인으로 적용된 경우에만 활성화된 것으로 보고한다.
 
