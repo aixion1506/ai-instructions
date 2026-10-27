@@ -59,9 +59,19 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - **Jira 쓰기:** 실제 승인된 Foundation Governance, Issue Role, Target Field의 현재 허용값과 변경 대상 최신 상태를 확인한다. 개인용 정책이 RPL 전역 Workflow/Taxonomy를 변경하지 않는다.
 - **설치 안전:** 전역 AGENTS·Symlink는 실제 경로, 양쪽 소유자/관리자, 생성된 파일 여부, `CODEX_HOME`과 `CODEX_DIR` 차이, 백업/복구 절차를 확인한 뒤 명시적 승인을 받아 적용한다.
 
+## 5.2 F4 작업별 실제 모델 라우팅·제목 기준 (개인 선호)
+
+- **소규모 구현·표적 테스트·단순 코드/문구 검토:** `gpt-6-luna`, reasoning `max`, Fast `ON`.
+- **분석·설계·복잡한 검토:** `gpt-6-sol`, Fast `OFF`; 좁은 근거 확인 `low`, 다중 파일·의존성 검토 `medium`, 보안·Governance·고위험 아키텍처/설계 검토 `high`. 기존 Astra 고위험 최종 판단과 Owner Gate는 보존한다.
+- **표시 제목:** `[업무 대상] + [끝낼 결과] + [PR/Jira]`. `F4-NEXT-BATCH`·`Task A`·`Luna 작업`처럼 실행 방식·모델명만 나오는 메타 제목 금지.
+- Coordinator는 Task별 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira·Branch/Base·HEAD`를 **실제 실행기 생성 설정**으로 전달할 수 있는지 확인한다. `requested_*`와 실행기가 증명한 `effective_*`를 분리 기록하고, UI가 설정을 수락했어도 실효값 확인 불가 시 `effective=UNKNOWN`으로 처리한다. 지원 불가 시 `ROUTING_UNVERIFIED`로 보고하고 임의 재설정·대체·중복 Dispatch를 금지한다.
+- 모델 배정은 자동 설치·권한 부여가 아니다. Writer/Reviewer의 독립 Context·Sole Writer/Worktree·Owner Source Merge·Production Gate를 유지한다.
+
 ## 6. 문서·코드·완료
 
 관련 API Contract/ADR가 바뀌면 Canonical Git Docs를 먼저 갱신한다. 제품 목표/상위 결정·사용자 안내가 실질적으로 달라지면 Confluence Projection을 갱신한다. 단순 구현 진행률은 Jira를 기준으로 링크하며 Confluence·GitHub에 중복 Task Board를 만들지 않는다.
+
+**문서 배치:** 기존 Concern Owner·정본과 상위/하위 문서 역할을 확인한다. 여러 업무의 목표·방향·핵심 상태는 **상위 요약+하위 링크**, 같은 주제 상세·검증은 **기존 하위 최소 갱신**, 독립 책임·긴 실행 인계는 **새 하위 후보**, 기술 계약/Jira 자체 변경은 **정본 Writer/Owner Gate**로 보낸다. 기존 하위 재사용을 우선하고 로그를 상위 로드맵에 누적하지 않는다. Source/Target Revision·동시 편집·링크 확인과 승인 없이 자동 문서 게시·정본 승격을 주장하지 않는다.
 
 `/async-batch`는 개인 사이드프로젝트에서 명시 호출하거나 해당 작업의 Batch 위임을 Owner가 명확히 승인했을 때만 활성화한다. 회사 업무·일반 개발에 자동 적용하지 않는다. 1 Primary Jira = 1 Writer = 1 Branch/PR을 기본값으로 한다. 권한/의존성 문제는 해당 항목만 HOLD하고 실사용 도구가 지원하지 않는 병렬/백그라운드 실행은 주장하지 않는다. 보고는 제3자 기준 **한 일·검증·실제 완료·다음 행동**만 간결히 정리한다.
 
