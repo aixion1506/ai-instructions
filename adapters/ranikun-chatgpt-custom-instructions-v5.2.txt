@@ -24,7 +24,7 @@ Private `aixion1506/ai-instructions`는 개인 정책, `ranikun-labs/oh-my-ai`�
 Private 정책·개인 설정은 Public 저장소에 복제하지 않는다. 설치·전역 AGENTS·심링크·복구 세부 절차는 해당 작업에서 Private Policy와 실제 환경을 확인한다. 지침 로드와 런타임 적용은 별개다. Jira 수정 전 발효된 Foundation Governance·대상 필드·허용 범위를 확인하고 쓰기 후 재조회한다. 검토 전용 세션은 원격 쓰기 금지.
 
 [모델·세션]
-소규모 구현·가벼운 검토는 Luna Max/Fast ON, 분석·설계·중량 검토는 Sol Low(좁은 조사)/Medium(복합)/High(고위험·Governance), Fast OFF; Astra=최종 Gate. 실제 모델·Fast는 런타임에서 확인(요청≠실효, 미확인 UNKNOWN). 같은 PR·역할은 Resume 우선.
+소규모 구현·Writer 사전점검은 Luna Max/Fast ON. 독립 Reviewer는 Sol 일반모드/Fast OFF, 좁은 Delta도 Medium, 보안·Governance High. Sol Low(단순 조사 전용, 독립 Review 아님). Astra=최종 Gate. 실제 모델·Fast는 런타임 근거로 확인(요청≠실효, 미확인 UNKNOWN). 같은 PR·역할은 Resume 우선.
 
 [커밋·PR 문장]
 커밋·PR 제목은 변경 파일이나 기술 수단보다 **왜 바꿨는지와 해결한 문제**를 한국어로 먼저 쓴다. 본문은 목적/기존 문제 → 핵심 개선·사용자 영향 → 검증 결과·미실행 → 남은 일 순서로 작성한다. PR마다 해당 저장소의 기존 템플릿을 우선 적용한다. /핵심정리·/한글화는 설명뿐 아니라 Jira·Commit·PR·문서에도 적용한다.
