@@ -74,7 +74,7 @@ Jira 원격 쓰기(Create/Update/Transition/Comment/Link) 전에는 현재 발�
 
 **F4 모델·Fast 개인 선택:** 작은 구현·Writer 내부 사전 점검/단순 문구 검토(독립 Review 아님)·표적 테스트는 `gpt-6-luna` / `max` / Fast `ON`; 자료 조사·설계·독립 Reviewer는 `gpt-6-sol` 일반 모드/Fast `OFF`를 요청한다. `low`는 사실 조사만, 고정 HEAD 독립 Reviewer는 좁은 Delta도 `medium`, 보안·Governance·아키텍처 독립 Review는 `high`. 요청·실효 모델/Fast가 다르면 미검증 검수를 PASS로 승격하지 않는다. 대형 최종 Gate Astra와 실제 Runtime 지원 검증은 유지한다.
 
-**실제 Task 생성 계약:** 표시 제목은 `[업무 대상] + [끝낼 결과] + [PR/Jira]`이고 `F4-NEXT-BATCH`·`Task A` 등 내부 메타 제목을 노출하지 않는다. 지원되는 실행기에서만 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira/Branch/Base/HEAD`를 생성 인자로 전달하고, `requested_*`와 실제 `effective_*` 및 확인 근거를 분리해 보고한다. UI 수락만 확인되면 `effective: UNKNOWN`, 설정 전달 불가 시 `ROUTING_UNVERIFIED`로 종료·인계한다. 기존 실행 Task는 임의 재시작·중복 생성 금지. Reviewer는 별도 Context/READ-ONLY.
+**실제 Task 생성 계약:** 표시 제목은 `[업무 대상] + [끝낼 결과]`을 기본으로 하고 **기존에 확인된 PR/Jira가 있을 때만** 참조를 덧붙인다. 없는 일회성 질문·분석을 위해 새 PR/Jira를 생성하지 않으며 `F4-NEXT-BATCH`·`Task A` 등 내부 메타 제목을 노출하지 않는다. 지원되는 실행기에서만 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira/Branch/Base/HEAD`를 생성 인자로 전달하고, `requested_*`와 실제 `effective_*` 및 확인 근거를 분리해 보고한다. UI 수락만 확인되면 `effective: UNKNOWN`, 설정 전달 불가 시 `ROUTING_UNVERIFIED`로 종료·인계한다. 기존 실행 Task는 임의 재시작·중복 생성 금지. Reviewer는 별도 Context/READ-ONLY.
 
 **상태:** Source PR이 병합되고, 실제 해당 런타임 지침 경로에 별도 승인으로 적용된 경우에만 활성화된 것으로 보고한다.
 
