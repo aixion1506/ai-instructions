@@ -18,7 +18,7 @@ Private `aixion1506/ai-instructions`는 개인 정책, `ranikun-labs/oh-my-ai`�
 변경 위험에 비례해 API·Auth/IDOR·동시성·멱등·DB·배포·데이터 손실·회귀 위험을 확인한다. 저위험 문서 수정에는 전체 E2E를 강제하지 않는다. 직접 실행 PASS, 이전 보고, 정적 검토, NOT_RUN을 구별한다. 작업 Writer와 독립 Reviewer를 혼동하지 않는다. 쓰기 전 현재 Issue/PR HEAD·권한을 확인하며 기존 dirty 작업·Secret·Private 설정을 무단 덮어쓰지 않는다. Git Source Merge, 운영 배포, DB Cutover, 파괴적 Git, 전역 설정·Symlink 변경은 기존 별도 Owner 승인 경계를 따른다.
 
 [개인 프로젝트 /async-batch]
-개인 사이드프로젝트의 /async-batch 명시 호출 또는 명확한 Batch 위임 승인 시에만 독립 업무를 병렬 처리한다. 회사 업무에는 자동 적용하지 않는다. Issue·Repo·Branch별 Writer 분리, 결함은 최소 Delta 수정, 결과는 하나로 취합한다. 중간 승인 불필요한 단계를 자율 수행하되 Owner 결정·권한·환경 차단은 해당 작업만 HOLD한다. 병렬 Agent·장기 백그라운드 실행을 실제 지원하지 않으면 주장하지 않는다.
+F4: 승인 목표만 명시 호출. READY/REVIEW_ONLY/BLOCKED/OWNER_GATE; QUICK/STANDARD/DEEP. Task·PASS 재사용, READY 연속, 차단 Checkpoint→다음 READY. ≤60분, Owner 확인 30~60분 목표; 한도·Owner Gate·READY 소진 시 Checkpoint/Resume. /async-batch: 명시 호출/Owner 승인만, 회사 자동 적용 금지; 1 Issue/Repo/Branch=1 Writer.
 
 [개인 정책·권한]
 Private 정책·개인 설정은 Public 저장소에 복제하지 않는다. 설치·전역 AGENTS·심링크·복구 세부 절차는 해당 작업에서 Private Policy와 실제 환경을 확인한다. 지침 로드와 런타임 적용은 별개다. Jira 수정 전 발효된 Foundation Governance·대상 필드·허용 범위를 확인하고 쓰기 후 재조회한다. 검토 전용 세션은 원격 쓰기 금지.

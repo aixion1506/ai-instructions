@@ -67,6 +67,17 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - Coordinator는 Task별 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira·Branch/Base·HEAD`를 **실제 실행기 생성 설정**으로 전달할 수 있는지 확인한다. `requested_*`와 실행기가 증명한 `effective_*`를 분리 기록하고, UI가 설정을 수락했어도 실효값 확인 불가 시 `effective=UNKNOWN`으로 처리한다. 지원 불가 시 `ROUTING_UNVERIFIED`로 보고하고 임의 재설정·대체·중복 Dispatch를 금지한다.
 - 모델 배정은 자동 설치·권한 부여가 아니다. Writer/Reviewer의 독립 Context·Sole Writer/Worktree·Owner Source Merge·Production Gate를 유지한다.
 
+## 5.3 F4 Goal Closure — 명시 호출형 실행
+
+`/F4` 또는 `$adaptive-goal-closure`는 승인된 Objective·Scope·AC에 대한 명시 호출로만 시작한다. 이는 제한된 실행 플레이북이지 Scheduler, Agent/Cloud Task 생성 API, 새 권한, 자동 Resume가 아니다.
+
+- Preflight에서 기존 Task/Writer 연결(현재 Task ID 또는 명시적 Handoff), Repo/PR/Base/HEAD, 권한·Runtime capability와 유효한 검증 증거를 확인·재사용하고 `READY`(현재 실행 가능), `REVIEW_ONLY`(고정 대상 읽기 전용 검토), `BLOCKED`(환경·의존성 차단), `OWNER_GATE`(결정·승인 필요)로 분류한다. 연결이 증명되지 않으면 Source Write를 시작하지 않는다. 승인된 Objective 안의 반복 중간 확인·승인은 줄이되 필수 Owner Gate는 생략하지 않는다.
+- 위험도에 따라 `QUICK`(저위험 문서·작은 Delta), `STANDARD`(일반 변경), `DEEP`(Auth·Secret·개인정보·DB·동시성·Cross-repo·배포)를 선택하고 표적 검증한다. 기존 PASS와 조건이 바뀌지 않은 동일 환경·권한 차단은 재사용하고 같은 조사를 반복하지 않는다.
+- 승인된 `READY`를 의존성 순서로 연속 처리한다. 막힌 항목은 Checkpoint에 격리하고 다른 독립 `READY`로 진행한다. Agent 재배치는 담당·Scope·비충돌 파일·지원 Runner가 확인된 경우에만 기존 승인 범위 안에서 한다. 중복 Writer·Task·Branch는 만들지 않는다.
+- 내부 단기 작업은 5~15분 단위, 실행 상한은 최대 60분, Owner 확인 창은 30~60분을 목표로 한다. 실제 Runtime/도구 한도가 우선하며 시간 채우기 작업은 만들지 않는다.
+- `Checkpoint/Resume`에는 Objective·AC·Scope·Repo/PR/Base/HEAD, 완료 항목과 실제 증거·NOT_RUN, 남은 `READY/BLOCKED/OWNER_GATE` 및 다음 행동을 기록하고 같은 Task/작업공간에서 이어간다. 조건이 변하지 않은 검증을 반복하지 않는다.
+- `READY` 소진, 예산·Runner 한도, 필수 Owner 결정 또는 안전 문제에서 종료한다. 알림·백그라운드 실행·자동 재시작이 지원되지 않으면 된다고 주장하지 않는다.
+
 ## 6. 문서·코드·완료
 
 관련 API Contract/ADR가 바뀌면 Canonical Git Docs를 먼저 갱신한다. 제품 목표/상위 결정·사용자 안내가 실질적으로 달라지면 Confluence Projection을 갱신한다. 단순 구현 진행률은 Jira를 기준으로 링크하며 Confluence·GitHub에 중복 Task Board를 만들지 않는다.
