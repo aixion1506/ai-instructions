@@ -4,11 +4,11 @@ Private source of truth for personal AI work preferences and safety policy.
 
 This repository owns the personal policy. The public ranikun-labs/oh-my-ai repository owns the reusable harness, Skills, and installation/runtime tools. Personal/private AI policy and settings must not be copied, committed, or pushed into tracked files of a public repository.
 
-## v5.2 — Lean cross-runtime proposal (RPL-114)
+## v5.2 — Lean cross-runtime source (RPL-114)
 
 **Status:** Private PR #2 was Rebase Merged into `master` at `d9e960f7e3e4d8113fbd9b9d2d7275421c1cc719` on 2026-10-30. The source merge does not install runtime settings. The applied policy version for ChatGPT, Codex, and Claude is **UNKNOWN**; Runtime Installation and Smoke are **NOT_RUN**. This source merge did not modify live ChatGPT Custom Instructions, Codex/Claude global files, runtime hooks, or the public oh-my-ai repository.
 
-| Layer | v5.2 candidate | Design |
+| Layer | v5.2 merged source | Design |
 | --- | --- | --- |
 | Common normative source | `policy/ranikun-common-senior-policy-v5.2.md` | Jira-first development; context reuse; risk-aware verification and permissions |
 | ChatGPT Web | `adapters/ranikun-chatgpt-custom-instructions-v5.2.txt` | Thin always-on instructions; under 3,500 Unicode code points, hard max 5,000 |
@@ -69,6 +69,6 @@ Runtime installation and Smoke are NOT_RUN; this README/source update changes no
 
 ## RPL-114 v5.1 → v5.2 정책 보존 기준
 
-v5.2는 기존 v5.1의 필수 계약을 삭제하는 새 정책이 아니라, Jira-first·맥락 재사용·런타임별 실행 차이를 추가하는 **검토 후보**다. v5.1 공통·ChatGPT·Codex 원본은 Git blob SHA로 보존한다. v5.2 Policy §8에서 상시 Kernel, 위험 기반 상세 조회, 단순 중복 제거를 구분한다. ChatGPT 상시 지침은 3,000~3,500자 범위이며 Codex의 실행 세부 계약은 별도 Adapter에 둔다.
+v5.2는 기존 v5.1의 필수 계약을 삭제하는 새 정책이 아니라, Jira-first·맥락 재사용·런타임별 실행 차이를 추가하는 **병합된 정책**이다. v5.1 공통·ChatGPT·Codex 원본은 Git blob SHA로 보존한다. v5.2 Policy §8에서 상시 Kernel, 위험 기반 상세 조회, 단순 중복 제거를 구분한다. ChatGPT 상시 지침은 3,000~3,500자 범위이며 Codex의 실행 세부 계약은 별도 Adapter에 둔다.
 
 Validator는 원본 SHA와 양 버전의 핵심 표지·문자 수를 검사하는 **구조 검증**이다. Python 실행 성공만으로 정책 의미 동등성, 독립 Review, ChatGPT/Codex/Claude 실제 설치를 입증하지 않는다. Native Validator 결과와 런타임 Smoke를 별도 기록한다.
