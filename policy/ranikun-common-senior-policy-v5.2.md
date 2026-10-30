@@ -63,7 +63,7 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 
 - **소규모 구현·표적 테스트·Writer 내부 사전 점검/문구 검토(독립 Reviewer 아님):** `gpt-6-luna`, reasoning `max`, Fast `ON`.
 - **분석·설계·독립 Reviewer:** `gpt-6-sol`, 일반 모드/Fast `OFF` 요청. 단순 근거 조회(독립 Review 아님) `low`, 고정 HEAD 독립 Reviewer(좁은 Delta 포함) `medium`, 보안·Governance·고위험 아키텍처/설계 독립 Review `high`. 요청·실효 모델/Fast를 구분하고 실효 미확인 검수는 독립 Review PASS로 승격하지 않는다. 기존 Astra 고위험 최종 판단과 Owner Gate는 보존한다.
-- **표시 제목:** `[업무 대상] + [끝낼 결과] + [PR/Jira]`. `F4-NEXT-BATCH`·`Task A`·`Luna 작업`처럼 실행 방식·모델명만 나오는 메타 제목 금지.
+- **표시 제목:** `[업무 대상] + [끝낼 결과]`을 기본으로 하고 **기존에 확인된 PR/Jira가 있을 때만** 참조를 덧붙인다. 없는 일회성 질문·분석을 위해 새 PR/Jira를 생성하지 않는다. `F4-NEXT-BATCH`·`Task A`·`Luna 작업`처럼 실행 방식·모델명만 나오는 메타 제목 금지.
 - Coordinator는 Task별 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira·Branch/Base·HEAD`를 **실제 실행기 생성 설정**으로 전달할 수 있는지 확인한다. `requested_*`와 실행기가 증명한 `effective_*`를 분리 기록하고, UI가 설정을 수락했어도 실효값 확인 불가 시 `effective=UNKNOWN`으로 처리한다. 지원 불가 시 `ROUTING_UNVERIFIED`로 보고하고 임의 재설정·대체·중복 Dispatch를 금지한다.
 - 모델 배정은 자동 설치·권한 부여가 아니다. Writer/Reviewer의 독립 Context·Sole Writer/Worktree·Owner Source Merge·Production Gate를 유지한다.
 
