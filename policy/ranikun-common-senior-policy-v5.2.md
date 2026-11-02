@@ -1,6 +1,6 @@
 # Ranikun Labs — Personal AI Policy v5.2
 
-**상태:** 검토 후보 / RPL-114. 기존 v5.1은 변경하지 않고 역사적 정책으로 보존한다. 이 문서가 병합되거나 런타임에 설치되기 전에는 v5.2가 실제 적용됐다고 주장하지 않는다.
+**상태:** Private PR #2에서 v5.2 Source가 `master`에 병합됨(2026-10-30); RPL-114는 완료. 기존 v5.1은 역사적 정책으로 보존한다. Source 병합은 ChatGPT·Codex·Claude의 사용자 Runtime 설치·로딩을 증명하지 않으며, 실제 적용 버전은 별도 증거가 없으면 `UNKNOWN`이다.
 
 ## 1. 목표와 소유권
 
@@ -74,6 +74,8 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - Preflight에서 기존 Task/Writer 연결(현재 Task ID 또는 명시적 Handoff), Repo/PR/Base/HEAD, 권한·Runtime capability와 유효한 검증 증거를 확인·재사용하고 `READY`(현재 실행 가능), `REVIEW_ONLY`(고정 대상 읽기 전용 검토), `BLOCKED`(환경·의존성 차단), `OWNER_GATE`(결정·승인 필요)로 분류한다. 연결이 증명되지 않으면 Source Write를 시작하지 않는다. 승인된 Objective 안의 반복 중간 확인·승인은 줄이되 필수 Owner Gate는 생략하지 않는다.
 - 위험도에 따라 `QUICK`(저위험 문서·작은 Delta), `STANDARD`(일반 변경), `DEEP`(Auth·Secret·개인정보·DB·동시성·Cross-repo·배포)를 선택하고 표적 검증한다. 기존 PASS와 조건이 바뀌지 않은 동일 환경·권한 차단은 재사용하고 같은 조사를 반복하지 않는다.
 - 승인된 `READY`를 의존성 순서로 연속 처리한다. 막힌 항목은 Checkpoint에 격리하고 다른 독립 `READY`로 진행한다. Agent 재배치는 담당·Scope·비충돌 파일·지원 Runner가 확인된 경우에만 기존 승인 범위 안에서 한다. 중복 Writer·Task·Branch는 만들지 않는다.
+**Writer 부재 시 복구 분기(try/catch):** `ACTIVE_CONFIRMED`면 기존 Task를 Resume한다. `RELEASED_CONFIRMED`면 종료·점유 해제와 Dirty Diff 보존을 확인하고 명시적 Handoff/Owner 승인으로 새 Sole Writer가 이어받는다. `WRITER_UNKNOWN`(목록 접근 실패·Task ID 미확인·응답 유실 포함)은 종료 증거가 아니므로 해당 Primary Jira·원본 PR/Worktree의 쓰기만 격리하고, **다른 독립 Primary Jira의 승인된 READY**에는 실행기 지원·별도 Writer/Worktree·권한 확인 후 신규 Writer를 배정해 계속한다. 같은 Jira의 격리 Recovery 후보는 충돌·기존 Writer 동결·범위를 명시한 별도 Owner 예외 승인이 없으면 수행하지 않으며, 이를 원본 PR 수정 권한으로 간주하지 않는다. `DISPATCH_UNAVAILABLE`이면 실제 Task 생성/Resume 성공을 주장하지 않고 Repo·Jira·PR·Base/HEAD·Scope/AC·필요 권한·검증을 담은 단일 실행 인계서를 남긴 뒤 다른 READY로 진행한다. 같은 실패를 새 증거 없이 재시도하지 않으며 전체 Objective는 안전한 READY가 없을 때만 정지한다. 이 분기는 새 Jira·Writer·Merge·Production 권한을 자동 부여하지 않는다.
+
 - 내부 단기 작업은 5~15분 단위, 실행 상한은 최대 60분, Owner 확인 창은 30~60분을 목표로 한다. 실제 Runtime/도구 한도가 우선하며 시간 채우기 작업은 만들지 않는다.
 - `Checkpoint/Resume`에는 Objective·AC·Scope·Repo/PR/Base/HEAD, 완료 항목과 실제 증거·NOT_RUN, 남은 `READY/BLOCKED/OWNER_GATE` 및 다음 행동을 기록하고 같은 Task/작업공간에서 이어간다. 조건이 변하지 않은 검증을 반복하지 않는다.
 - `READY` 소진, 예산·Runner 한도, 필수 Owner 결정 또는 안전 문제에서 종료한다. 알림·백그라운드 실행·자동 재시작이 지원되지 않으면 된다고 주장하지 않는다.
