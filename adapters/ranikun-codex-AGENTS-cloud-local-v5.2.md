@@ -1,6 +1,6 @@
 # Ranikun Labs — Codex Cloud / Local Adapter v5.2
 
-> **RPL-114 / REVIEW CANDIDATE**. Private Policy: `policy/ranikun-common-senior-policy-v5.2.md`. 개인 환경에 미설치. Public `oh-my-ai`의 생성된 `AGENTS.md`를 덮어쓰거나 Private 본문을 Public 저장소에 복사하지 않는다.
+> **RPL-114 / SOURCE MERGED (Private PR #2, 2026-10-30)**. Private Policy: `policy/ranikun-common-senior-policy-v5.2.md`. 실제 Codex Cloud/Local 사용자 환경의 적용 버전·설치 상태는 별도 실측 전 `UNKNOWN`이다. Public `oh-my-ai`의 생성된 `AGENTS.md`를 덮어쓰거나 Private 본문을 Public 저장소에 복사하지 않는다.
 
 ## 1. 시작과 맥락 재사용
 
@@ -29,6 +29,8 @@
 **F4 Adaptive Goal Closure — 명시 호출·접근성:** 사용자가 승인된 Objective에 대해 F4 실행이나 `$adaptive-goal-closure`를 **명시적으로** 요청한 경우에만, 현재 Codex Checkout의 `.agents/skills/adaptive-goal-closure/SKILL.md` 또는 실제 사용자 Skill 경로(`~/.agents/skills/adaptive-goal-closure/SKILL.md`)의 존재·원본 접근·유효성을 확인하고 해당 Public 플레이북을 읽어 적용한다. `ranikun-labs/oh-my-ai` PR #89의 파일·repo-local Symlink가 다른 Repo/Cloud Task에 자동 전파된다고 가정하지 않는다. Skill이 없거나 Cloud 환경에서 활성화되지 않았다면 `Skill Discovery / 명시 호출 / 원문 로딩 / 절차 적용`을 각각 `PASS / NOT_RUN / BLOCKED / UNKNOWN`으로 구분한다. 승인된 기존 Private Policy·현재 실행 능력 안에서만 F4를 수동 Fallback하며, 수동 GitHub 파일 Read를 실제 Codex Skill 활성화로 보고하지 않는다. 기존 `work-start` Human Review·Sole Writer·Owner Merge/Production Gate는 유지하고, 자동 Dispatcher·Cloud Task 생성·Resume·사용자 설정 설치를 주장하거나 권한 없이 실행하지 않는다.
 
 **F4 Goal Closure 실행·증거:** 승인된 Objective를 확인된 기존 Task/Writer에서 Resume하고 `READY/REVIEW_ONLY/BLOCKED/OWNER_GATE` 및 `QUICK/STANDARD/DEEP`로 분류한다. 승인된 `READY`를 최대 60분 안에서 연속 처리하고, 개별 차단은 Checkpoint에 남긴 뒤 다음 READY로 간다. Checkpoint는 Repo/PR/Base/HEAD, 완료 증거·NOT_RUN, 남은 lane·Owner Gate·다음 행동을 보존한다. 조건이 같은 차단은 재조사하지 않는다. Task association이 증명되지 않으면 원격 Source Write를 하지 않는다. 지원되지 않는 병렬 실행·알림·자동 Resume를 주장하지 않는다.
+
+**Writer 조회 실패 시 Fallback:** 기존 Writer를 찾지 못한 것은 종료 확인이 아니다. `ACTIVE_CONFIRMED`면 기존 Task Resume, `RELEASED_CONFIRMED`면 보존된 변경·명시적 Handoff·Owner 승인을 거쳐 단일 대체 Writer로 교체한다. `WRITER_UNKNOWN`이면 기존 Jira/PR/Worktree에 새 Writer를 중복 투입하지 않고 해당 Lane만 격리하되, **다른 독립 READY**는 승인 Scope·Writer 독점·지원 Runner가 확인되는 경우 신규 Agent/Task로 실행한다. 같은 Jira의 격리 Recovery는 별도 Owner 예외 결정 없이는 금지한다. 실제 Spawn/Resume 도구가 없다면 `RUNTIME_DISPATCH_UNAVAILABLE`로 한 번 기록하고 정확한 Repo·Primary Jira·PR/Branch·Base/HEAD·Scope·패치·권한·검증·중단 조건을 갖춘 Task Handoff를 실행 가능한 환경으로 넘긴다. 같은 실패를 반복 호출하거나 Agent 생성 성공으로 보고하지 않는다. Subagent Spawn과 기존 PR Writer 승계는 별개다.
 
 ### Codex Cloud
 
