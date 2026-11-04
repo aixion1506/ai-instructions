@@ -1,6 +1,6 @@
 # Ranikun Labs — Codex Cloud / Local Adapter v5.2
 
-> **RPL-114 / REVIEW CANDIDATE**. Private Policy: `policy/ranikun-common-senior-policy-v5.2.md`. 개인 환경에 미설치. Public `oh-my-ai`의 생성된 `AGENTS.md`를 덮어쓰거나 Private 본문을 Public 저장소에 복사하지 않는다.
+> **RPL-114 / SOURCE MERGED (Private PR #2, 2026-10-30)**. Private Policy: `policy/ranikun-common-senior-policy-v5.2.md`. 실제 Codex Cloud/Local 사용자 환경의 적용 버전·설치 상태는 별도 실측 전 `UNKNOWN`이다. Public `oh-my-ai`의 생성된 `AGENTS.md`를 덮어쓰거나 Private 본문을 Public 저장소에 복사하지 않는다.
 
 ## 1. 시작과 맥락 재사용
 
@@ -29,6 +29,12 @@
 **F4 Adaptive Goal Closure — 명시 호출·접근성:** 사용자가 승인된 Objective에 대해 F4 실행이나 `$adaptive-goal-closure`를 **명시적으로** 요청한 경우에만, 현재 Codex Checkout의 `.agents/skills/adaptive-goal-closure/SKILL.md` 또는 실제 사용자 Skill 경로(`~/.agents/skills/adaptive-goal-closure/SKILL.md`)의 존재·원본 접근·유효성을 확인하고 해당 Public 플레이북을 읽어 적용한다. `ranikun-labs/oh-my-ai` PR #89의 파일·repo-local Symlink가 다른 Repo/Cloud Task에 자동 전파된다고 가정하지 않는다. Skill이 없거나 Cloud 환경에서 활성화되지 않았다면 `Skill Discovery / 명시 호출 / 원문 로딩 / 절차 적용`을 각각 `PASS / NOT_RUN / BLOCKED / UNKNOWN`으로 구분한다. 승인된 기존 Private Policy·현재 실행 능력 안에서만 F4를 수동 Fallback하며, 수동 GitHub 파일 Read를 실제 Codex Skill 활성화로 보고하지 않는다. 기존 `work-start` Human Review·Sole Writer·Owner Merge/Production Gate는 유지하고, 자동 Dispatcher·Cloud Task 생성·Resume·사용자 설정 설치를 주장하거나 권한 없이 실행하지 않는다.
 
 **F4 Goal Closure 실행·증거:** 승인된 Objective를 확인된 기존 Task/Writer에서 Resume하고 `READY/REVIEW_ONLY/BLOCKED/OWNER_GATE` 및 `QUICK/STANDARD/DEEP`로 분류한다. 승인된 `READY`를 최대 60분 안에서 연속 처리하고, 개별 차단은 Checkpoint에 남긴 뒤 다음 READY로 간다. Checkpoint는 Repo/PR/Base/HEAD, 완료 증거·NOT_RUN, 남은 lane·Owner Gate·다음 행동을 보존한다. 조건이 같은 차단은 재조사하지 않는다. Task association이 증명되지 않으면 원격 Source Write를 하지 않는다. 지원되지 않는 병렬 실행·알림·자동 Resume를 주장하지 않는다.
+
+**논리 PR Writer와 실제 Codex Task 구분:** GitHub PR·Commit·Jira 담당자·브랜치만으로 과거 Codex Cloud Task가 있었다거나 현재 세션에서 Resume할 수 있다고 추정하지 않는다. GitHub Connector로 수정한 Source를 Cloud Task 작업물로 오인하지 않는다. 확인 가능한 Task URL/ID·명시적 Handoff·실행 환경의 Writer 점유/종료 증거를 분리해 확인한다. Task ID를 찾지 못해도 기존 PR/Worktree는 보호하고, 다른 독립 READY의 실행 여부는 별도 판단한다. 원본 PR을 건드리지 않는 격리 후보조차 같은 Jira의 Writer 충돌·Owner 예외 승인 없이는 원격 Source Write를 시작하지 않는다.
+
+**Git Source 장애별 Fallback:** Cloud shell의 `git fetch`가 프록시·네트워크 장애로 실패하면 `SOURCE_FETCH_UNAVAILABLE`로 기록한다. 이는 `WRITER_UNKNOWN`과 별개다. 승인된 GitHub Connector/API에서 정확한 Repo/Base/HEAD와 Blob/Tree의 바이트·SHA·변경 범위를 대조한다. `API READ ≠ Git WRITE`; API Read는 원격 Write·Task 점유 해제·Writer 승인 권한을 주지 않는다. v10 Patch가 없으면 승인된 Scope의 비-Reviewer는 고정 Source와 Finding/AC로 원본 PR/Worktree와 분리된 임시 디렉터리에 격리된 로컬 후보 Patch (`TECHNICAL_CANDIDATE`)를 재구성하고 표적 테스트할 수 있다. 후보를 기존 PR/Worktree에 적용하거나 Commit·Branch·Remote Write하지 않는다. 같은 Primary Jira의 Writer 승계·원격 Source Write는 별도 Owner 예외 Gate를 요구한다. CLI·API 읽기가 모두 불가하면 이를 한 번 기록하고 다른 독립 READY를 진행한다.
+
+**Writer 조회 실패 시 Fallback:** 기존 Writer를 찾지 못한 것은 종료 확인이 아니다. `ACTIVE_CONFIRMED`면 기존 Task Resume, `RELEASED_CONFIRMED`면 보존된 Dirty Diff·명시적 Handoff·Owner 승인을 거쳐 단일 대체 Writer로 교체한다. `WRITER_UNKNOWN`이면 같은 Primary Jira의 Writer 배정·승계와 기존 PR/Worktree Write는 격리한다. 승인된 Scope의 비-Reviewer는 별도 임시 디렉터리에서 로컬 `TECHNICAL_CANDIDATE`를 준비할 수 있다. 이는 새 Writer/Task, Recovery Branch, 원격 Source Write가 아니다. 같은 Primary Jira의 Writer 승계·원격 Source Write는 별도 Owner 예외 Gate가 필요하다. 다른 독립 READY는 승인 Scope·Writer 독점·지원 Runner 확인 후 실행한다. 실제 Spawn/Resume 도구가 없으면 `RUNTIME_DISPATCH_UNAVAILABLE`로 한 번 기록하고 정확한 Task Handoff를 남긴다. 같은 실패를 반복 호출하거나 Agent 생성 성공으로 보고하지 않는다. Subagent Spawn은 기존 PR Writer 승계와 별개다.
 
 ### Codex Cloud
 

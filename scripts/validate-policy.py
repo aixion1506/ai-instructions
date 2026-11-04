@@ -104,6 +104,24 @@ V52_MARKERS = {
     "codex": ("v5.1 필수 계약 복원", "명시적 구현 위임 전 작성 금지", "Invariant·Pseudocode·Test Criteria·Skeleton", "[기존 계약]", "[필수 구현]", "[제품 결정 필요]", "API 하위호환", "Auth/IDOR", "Luna Max + Fast ON", "Jira-first", "Codex Cloud", "Codex Local", "ChatGPT",
               "독립 Reviewer", "Confluence", "성과", "Source Merge", "NOT_RUN", "**문서 계층 배치:**", "**실제 Task 생성 계약:**", "기존에 확인된 PR/Jira가 있을 때만", "gpt-6-luna", "effective: UNKNOWN", "F4 Adaptive Goal Closure — 명시 호출·접근성", "adaptive-goal-closure", "수동 GitHub 파일 Read를 실제 Codex Skill 활성화로 보고하지 않는다", "F4 Goal Closure 실행·증거", "READY/REVIEW_ONLY/BLOCKED/OWNER_GATE", "QUICK/STANDARD/DEEP", "Checkpoint", "60분", "원격 Source Write"),
 }
+# CLI transport failure is distinct from Writer ownership failure.
+V52_SOURCE_FETCH_FALLBACK_MARKERS = {
+    "common": ("SOURCE_FETCH_UNAVAILABLE", "`git fetch`", "GitHub Connector/API", "Blob/Tree", "격리 로컬 Patch 후보", "다른 독립 READY",),
+    "codex": ("SOURCE_FETCH_UNAVAILABLE", "`git fetch`", "GitHub Connector/API", "Blob/Tree", "후보 Patch", "Owner 예외 Gate",),
+}
+
+# F4 source-boundary regression guards: structural markers, not Runtime behavior.
+V52_SOURCE_FETCH_BOUNDARY_MARKERS = {
+    "common": ("Blob/Tree의 바이트·SHA·변경 범위", "API READ ≠ Git WRITE", "승인된 Scope의 비-Reviewer", "원본 PR/Worktree와 분리된 임시 디렉터리", "TECHNICAL_CANDIDATE", "같은 Primary Jira의 Writer 승계·원격 Source Write는 별도 Owner 예외 Gate"),
+    "codex": ("Blob/Tree의 바이트·SHA·변경 범위", "API READ ≠ Git WRITE", "승인된 Scope의 비-Reviewer", "원본 PR/Worktree와 분리된 임시 디렉터리", "TECHNICAL_CANDIDATE", "같은 Primary Jira의 Writer 승계·원격 Source Write는 별도 Owner 예외 Gate"),
+}
+
+# F4 recovery and feature-level review regression guards (structural, not Runner E2E).
+V52_F4_RECOVERY_MARKERS = {
+    "common": ("ACTIVE_CONFIRMED", "RELEASED_CONFIRMED", "WRITER_UNKNOWN", "RUNTIME_DISPATCH_UNAVAILABLE", "다른 독립 Primary Jira", "원본 PR/Worktree", "**논리 Writer·Git Source·Codex Task 분리:**", "Feature/Slice 단위 검증·검수", "각 PR의 독립 Review Gate는 유지", "조기 종료 방지와 READY 재배정",),
+    "codex": ("ACTIVE_CONFIRMED", "RELEASED_CONFIRMED", "WRITER_UNKNOWN", "RUNTIME_DISPATCH_UNAVAILABLE", "**논리 PR Writer와 실제 Codex Task 구분:**", "다른 독립 READY", "기존 PR/Worktree",),
+}
+
 LEAN_CHATGPT_BUDGET = 3500
 MIN_CHATGPT_BUDGET = 3000
 # Exact Git blob identities of the three approved v5.1 originals.
@@ -119,7 +137,7 @@ def validate_v52() -> int:
         except (OSError, UnicodeDecodeError) as exc:
             errors.append(f"missing or unreadable v5.2 {name}: {exc}")
             continue
-        for marker in V52_MARKERS[name]:
+        for marker in V52_MARKERS[name] + V52_F4_RECOVERY_MARKERS.get(name, ()) + V52_SOURCE_FETCH_FALLBACK_MARKERS.get(name, ()) + V52_SOURCE_FETCH_BOUNDARY_MARKERS.get(name, ()):
             if marker not in source:
                 errors.append(f"missing v5.2 {name} marker: {marker}")
         if not source.endswith("\n"):
