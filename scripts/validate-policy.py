@@ -110,6 +110,12 @@ V52_SOURCE_FETCH_FALLBACK_MARKERS = {
     "codex": ("SOURCE_FETCH_UNAVAILABLE", "`git fetch`", "GitHub Connector/API", "Blob/Tree", "후보 Patch", "Owner 예외 Gate",),
 }
 
+# F4 source-boundary regression guards: structural markers, not Runtime behavior.
+V52_SOURCE_FETCH_BOUNDARY_MARKERS = {
+    "common": ("Blob/Tree의 바이트·SHA·변경 범위", "API READ ≠ Git WRITE", "승인된 Scope의 비-Reviewer", "원본 PR/Worktree와 분리된 임시 디렉터리", "TECHNICAL_CANDIDATE", "같은 Primary Jira의 Writer 승계·원격 Source Write는 별도 Owner 예외 Gate"),
+    "codex": ("Blob/Tree의 바이트·SHA·변경 범위", "API READ ≠ Git WRITE", "승인된 Scope의 비-Reviewer", "원본 PR/Worktree와 분리된 임시 디렉터리", "TECHNICAL_CANDIDATE", "같은 Primary Jira의 Writer 승계·원격 Source Write는 별도 Owner 예외 Gate"),
+}
+
 # F4 recovery and feature-level review regression guards (structural, not Runner E2E).
 V52_F4_RECOVERY_MARKERS = {
     "common": ("ACTIVE_CONFIRMED", "RELEASED_CONFIRMED", "WRITER_UNKNOWN", "RUNTIME_DISPATCH_UNAVAILABLE", "다른 독립 Primary Jira", "원본 PR/Worktree", "**논리 Writer·Git Source·Codex Task 분리:**", "Feature/Slice 단위 검증·검수", "각 PR의 독립 Review Gate는 유지", "조기 종료 방지와 READY 재배정",),
@@ -131,7 +137,7 @@ def validate_v52() -> int:
         except (OSError, UnicodeDecodeError) as exc:
             errors.append(f"missing or unreadable v5.2 {name}: {exc}")
             continue
-        for marker in V52_MARKERS[name] + V52_F4_RECOVERY_MARKERS.get(name, ()) + V52_SOURCE_FETCH_FALLBACK_MARKERS.get(name, ()):
+        for marker in V52_MARKERS[name] + V52_F4_RECOVERY_MARKERS.get(name, ()) + V52_SOURCE_FETCH_FALLBACK_MARKERS.get(name, ()) + V52_SOURCE_FETCH_BOUNDARY_MARKERS.get(name, ()):
             if marker not in source:
                 errors.append(f"missing v5.2 {name} marker: {marker}")
         if not source.endswith("\n"):
