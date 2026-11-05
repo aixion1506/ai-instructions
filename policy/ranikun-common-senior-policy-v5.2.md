@@ -67,9 +67,15 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - Coordinator는 Task별 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira·Branch/Base·HEAD`를 **실제 실행기 생성 설정**으로 전달할 수 있는지 확인한다. `requested_*`와 실행기가 증명한 `effective_*`를 분리 기록하고, UI가 설정을 수락했어도 실효값 확인 불가 시 `effective=UNKNOWN`으로 처리한다. 지원 불가 시 `ROUTING_UNVERIFIED`로 보고하고 임의 재설정·대체·중복 Dispatch를 금지한다.
 - 모델 배정은 자동 설치·권한 부여가 아니다. Writer/Reviewer의 독립 Context·Sole Writer/Worktree·Owner Source Merge·Production Gate를 유지한다.
 
-## 5.3 F4 Goal Closure — 명시 호출형 실행
+## 5.3 F4 Goal Closure — 자동 의도 감지·명시 Skill 호출·승인 실행 분리
 
-`/F4` 또는 `$adaptive-goal-closure`는 승인된 Objective·Scope·AC에 대한 명시 호출로만 시작한다. 이는 제한된 실행 플레이북이지 Scheduler, Agent/Cloud Task 생성 API, 새 권한, 자동 Resume가 아니다.
+- `AUTO_INTENT=ON`: 자연어에서 기존 승인 Objective의 완료·재개 의도를 감지한다. 의도 분류만으로 Skill을 로드·호출하거나 실행·위임·원격 쓰기 권한을 얻지 않는다.
+- `AUTO_PREFLIGHT=DEVELOPMENT-only`: 개발 요청에는 READ-ONLY Preflight를 자동 적용한다. 일반 질문·설명·조회(READ)는 답변만 하며 Jira·Task·Writer를 만들거나 시작하지 않는다.
+- `AUTO_EXECUTION=GATED`: 기존 승인 Objective·Scope·AC, Primary Jira/Task, 단일 Writer/Worktree, 현재 Repo/PR/Base/HEAD, 쓰기 권한, 지원 Runtime이 모두 확인된 경우에만 이미 승인된 범위의 READY를 실행한다. 하나라도 없거나 UNKNOWN이면 `OWNER_GATE` 또는 `BLOCKED`로 격리하고 자동 실행하지 않는다. Jira·Task·Writer를 자동 생성하지 않는다.
+- `/F4` 또는 `$adaptive-goal-closure` Skill 호출은 계속 명시적으로 요구한다. 자연어 Intent는 Public PR #89 Skill을 암묵적으로 로드·호출하지 않는다. Skill이 없으면 승인된 범위에서 수동 F4 fallback을 사용하고 Discovery/Load/Apply 증거를 구분한다.
+- 격리 로컬 `TECHNICAL_CANDIDATE`는 `AUTO_EXECUTION` 대상 `READY`가 아닌 별도 수동 복구 단계다. 이미 승인된 Scope에서 비-Reviewer가 명시적으로 요청하면 고정 Source·별도 임시 디렉터리에서 Owner Recovery 추가 승인 없이 작성·검증할 수 있다. `AUTO_INTENT`는 이를 자동 시작하지 않으며, 후보는 Writer/Task 승계·Branch·원격 Write 권한을 주지 않는다.
+
+이는 제한된 실행 플레이북이지 Scheduler, Agent/Cloud Task 생성 API, 새 권한, 자동 Resume가 아니다.
 
 - Preflight에서 기존 Task/Writer 연결(현재 Task ID 또는 명시적 Handoff), Repo/PR/Base/HEAD, 권한·Runtime capability와 유효한 검증 증거를 확인·재사용하고 `READY`(현재 실행 가능), `REVIEW_ONLY`(고정 대상 읽기 전용 검토), `BLOCKED`(환경·의존성 차단), `OWNER_GATE`(결정·승인 필요)로 분류한다. 연결이 증명되지 않으면 Source Write를 시작하지 않는다. 승인된 Objective 안의 반복 중간 확인·승인은 줄이되 필수 Owner Gate는 생략하지 않는다.
 - 위험도에 따라 `QUICK`(저위험 문서·작은 Delta), `STANDARD`(일반 변경), `DEEP`(Auth·Secret·개인정보·DB·동시성·Cross-repo·배포)를 선택하고 표적 검증한다. 기존 PASS와 조건이 바뀌지 않은 동일 환경·권한 차단은 재사용하고 같은 조사를 반복하지 않는다.
