@@ -118,7 +118,7 @@ V52_MARKERS = {
         "`AUTO_INTENT`는 이를 자동 시작하지 않으며",
     ),
     "chatgpt": (
-        "명시적 구현 위임 전 작성 금지", "Invariant·Pseudocode·Test Criteria·Skeleton",
+        "명시 위임 전 금지", "Invariant·Pseudocode·Test Criteria·Skeleton",
         "[판단·검토 계약]", "[Codex 위임·Git]", "[기존 계약]", "[과설계]",
         "CODEX_HOME", "range-diff", "[업무 시작 — Jira-first]",
         "[정본·컨텍스트 — 필요할 때만]", "[커밋·PR 문장]", "[모델·세션]",
@@ -126,15 +126,15 @@ V52_MARKERS = {
         "Runtime 설치·전역 AGENTS·Symlink 변경 및 설치 복구는 Private Policy·실환경 확인 후 Owner 승인 필요.",
         "작업 목적 제목", "미확인 UNKNOWN", "AUTO_INTENT=ON",
         "AUTO_PREFLIGHT=DEVELOPMENT-only", "AUTO_EXECUTION=GATED",
-        "AUTO_INTENT=ON(자연어로 기존 승인 Goal 완료·재개 의도 감지; 권한 아님).",
-        "AUTO_PREFLIGHT=DEVELOPMENT-only(개발 요청 READ-ONLY; Jira/Task Create 없음).",
+        "AUTO_INTENT=ON(승인 Goal 감지; 권한 아님).",
+        "AUTO_PREFLIGHT=DEVELOPMENT-only(개발 요청 READ-ONLY; 질문/READ=답변, Create 금지).",
         "Intent≠Load/Invoke", "explicit-only",
-        "기존 Objective/Scope/AC·Primary Jira/Task·단일 Writer/Worktree·Repo/PR/Base/HEAD·권한·지원 Runtime이 모두 확인된 기존 READY만",
-        "신규 Jira/Task/Writer 금지", "질문/READ는 실행·Jira/Writer 생성 금지",
+        "승인 Scope/AC·Primary Jira·Writer/Worktree·Repo/PR/Base/HEAD·권한/Runtime 확인된 기존 READY만",
+        "신규 Jira/Task/Writer 금지", "질문/READ=답변, Create 금지",
         "검토 전용 세션은 원격 쓰기 금지", "READY/REVIEW_ONLY/BLOCKED/OWNER_GATE",
-        "TECHNICAL_CANDIDATE 자동 작성 금지, 승인 Scope의 명시 요청만 별도 격리 가능.",
+        "TECHNICAL_CANDIDATE 자동 금지; 승인 Scope 명시요청만 격리.",
         "QUICK/STANDARD/DEEP", "≤60분", "Checkpoint", "Resume",
-        "개인 사이드프로젝트만", "회사 자동 적용 금지",
+        "개인 사이드프로젝트 명시/Owner 위임만", "회사 자동 적용 금지",
     ),
     "codex": (
         "v5.1 필수 계약 복원", "명시적 구현 위임 전 작성 금지",
@@ -178,6 +178,150 @@ V52_F4_RECOVERY_MARKERS = {
     "common": ("ACTIVE_CONFIRMED", "RELEASED_CONFIRMED", "WRITER_UNKNOWN", "RUNTIME_DISPATCH_UNAVAILABLE", "다른 독립 Primary Jira", "원본 PR/Worktree", "**논리 Writer·Git Source·Codex Task 분리:**", "Feature/Slice 단위 검증·검수", "각 PR의 독립 Review Gate는 유지", "조기 종료 방지와 READY 재배정",),
     "codex": ("ACTIVE_CONFIRMED", "RELEASED_CONFIRMED", "WRITER_UNKNOWN", "RUNTIME_DISPATCH_UNAVAILABLE", "**논리 PR Writer와 실제 Codex Task 구분:**", "다른 독립 READY", "기존 PR/Worktree",),
 }
+# These fixtures guard policy wording only; RPL-120 owns runtime state transitions.
+V52_F4_PHASE_GATE_MARKERS = {
+    "common": (
+        "F4 단계별 Gate Inventory", "EvidenceRef·Scope/Revision·ObservedAt·Status·Owner·NextAction",
+        "`IMPLEMENTATION_READY`", "Review 완료는 구현 선행조건이 아니다", "`REVIEW_READY`", "`MERGE_READY`",
+        "요청/실효 모델·Reasoning·Fast 증거", "DecisionRef·DecisionOwner·Action·Target·Scope/Revision",
+        "현재 요청에 유효할 때만", "LOCAL_HEAD_MISMATCH", "GIT_TRANSPORT_BLOCKED",
+        "SOURCE_FETCH_UNAVAILABLE", "RUNTIME_DISPATCH_UNAVAILABLE", "Checkpoint fingerprint",
+        "동일 환경·권한·Revision이면 재진단하지 않는다", "RPL-136 회귀 Fixture",
+        "정책 준수 PASS를 합성하지 않는다.", "다른 독립 READY를 진행한다",
+        "필수 Gate가 UNKNOWN/BLOCKED면 `MERGE_READY`로 올리지 않고 Merge하지 않는다.",
+        "Reviewed HEAD가 바뀌면 새 고정 검수를 요구한다.",
+    ),
+    "codex": (
+        "F4 단계 Gate·Recovery 증거", "`IMPLEMENTATION_READY`", "Review 완료는 구현 선행조건이 아니다",
+        "`REVIEW_READY`", "`MERGE_READY`", "EvidenceRef·Scope/Revision·ObservedAt·Status·Owner·NextAction",
+        "DecisionRef·DecisionOwner·Action·Target·Scope/Revision", "유효한 기존 승인은 재요청하지 않는다", "LOCAL_HEAD_MISMATCH", "GIT_TRANSPORT_BLOCKED",
+        "SOURCE_FETCH_UNAVAILABLE", "WRITER_UNKNOWN", "RUNTIME_DISPATCH_UNAVAILABLE",
+        "DISPATCH_UNAVAILABLE", "Checkpoint fingerprint", "동일 환경·권한·Revision",
+        "RPL-136 회귀 Fixture", "정책 PASS", "독립 READY",
+    ),
+    "chatgpt": (
+        "Inventory=EvidenceRef/Scope·Revision/ObservedAt/Status/Owner/NextAction",
+        "IMPLEMENTATION_READY=", "REVIEW_READY=", "MERGE_READY=",
+        "Review 선행 불요", "실효 Reviewer UNKNOWN=정책 PASS 금지",
+        "같은 BLOCKED 재진단 금지", "유효 승인 Scope 재사용; 불명확/변경=OWNER_GATE.",
+    ),
+}
+
+RPL136_POLICY_OUTCOME_MARKERS = {
+    "reuse valid in-scope approval only; do not re-request": ("common", "현재 요청에 유효할 때만 기존 승인을 재사용하며 같은 승인을 다시 묻지 않는다."),
+    "scope mismatch remains OWNER_GATE": ("common", "범위가 불명확하거나 달라지면 `OWNER_GATE`로 남긴다."),
+    "reviewer UNKNOWN is not policy PASS": ("common", "실효값 UNKNOWN이어도 기술 검수 결과는 별도 보존하되 정책 준수 PASS를 합성하지 않는다."),
+    "preserve Dirty Worktree": ("common", "두 상태 모두 Dirty Worktree를 보존하고 동일한 조건에서 재시도하지 않는다."),
+    "do not merge while required gates are blocked": ("common", "필수 Gate가 UNKNOWN/BLOCKED면 `MERGE_READY`로 올리지 않고 Merge하지 않는다."),
+    "do not repeat unchanged diagnostics": ("common", "동일 Checkpoint fingerprint 및 동일 환경·권한·Revision이면 재진단하지 않는다."),
+    "checkpoint and continue independent READY": ("common", "막힌 항목은 Checkpoint에 격리하고 다른 독립 `READY`로 진행한다."),
+    "changed HEAD requires fixed-head review": ("common", "Reviewed HEAD가 바뀌면 새 고정 검수를 요구한다."),
+}
+
+RPL136_REGRESSION_FIXTURE = {
+    "kind": "synthetic_policy_scenario_not_current_pr_status",
+    "signals": (
+        "PR #6 Owner Merge approval + DecisionRef scope-valid (scenario input)",
+        "CI SUCCESS", "fixed-HEAD technical review reported",
+        "reviewer effective model/Fast UNKNOWN", "Git proxy failure",
+        "Local HEAD mismatch", "Dirty Worktree present",
+    ),
+    "expected": (
+        "reuse valid in-scope approval only; do not re-request",
+        "scope mismatch remains OWNER_GATE",
+        "reviewer UNKNOWN is not policy PASS",
+        "preserve Dirty Worktree",
+        "do not merge while required gates are blocked",
+        "do not repeat unchanged diagnostics",
+        "checkpoint and continue independent READY",
+        "changed HEAD requires fixed-head review",
+    ),
+    "changed_input_rule": "re-evaluate only affected Gate; a changed HEAD needs review at the new fixed HEAD",
+}
+
+def missing_rpl136_policy_outcomes(loaded):
+    return tuple(
+        outcome
+        for outcome, (name, marker) in RPL136_POLICY_OUTCOME_MARKERS.items()
+        if marker not in loaded.get(name, "")
+    )
+
+def validate_rpl136_static_fixture(loaded, errors):
+    required_signals = {
+        "PR #6 Owner Merge approval + DecisionRef scope-valid (scenario input)",
+        "CI SUCCESS", "fixed-HEAD technical review reported",
+        "reviewer effective model/Fast UNKNOWN", "Git proxy failure",
+        "Local HEAD mismatch", "Dirty Worktree present",
+    }
+    required_outcomes = {
+        "reuse valid in-scope approval only; do not re-request",
+        "scope mismatch remains OWNER_GATE",
+        "reviewer UNKNOWN is not policy PASS",
+        "preserve Dirty Worktree",
+        "do not merge while required gates are blocked",
+        "do not repeat unchanged diagnostics",
+        "checkpoint and continue independent READY",
+        "changed HEAD requires fixed-head review",
+    }
+    if RPL136_REGRESSION_FIXTURE["kind"] != "synthetic_policy_scenario_not_current_pr_status":
+        errors.append("RPL-136 fixture must be explicitly synthetic, not a live status claim")
+    if set(RPL136_REGRESSION_FIXTURE["signals"]) != required_signals:
+        errors.append("RPL-136 regression fixture inputs drifted")
+    if set(RPL136_REGRESSION_FIXTURE["expected"]) != required_outcomes:
+        errors.append("RPL-136 regression fixture outcomes drifted")
+    if set(RPL136_POLICY_OUTCOME_MARKERS) != required_outcomes:
+        errors.append("RPL-136 policy outcome assertions drifted")
+    for outcome in missing_rpl136_policy_outcomes(loaded):
+        errors.append(f"RPL-136 policy outcome missing: {outcome}")
+    if "changed HEAD" not in RPL136_REGRESSION_FIXTURE["changed_input_rule"]:
+        errors.append("RPL-136 fixture must invalidate review on changed HEAD")
+    if not errors:
+        print("RPL-136 policy regression fixture: PASS")
+
+def validate_rpl136_outcome_mutation_regression(loaded, errors):
+    tested = 0
+    for outcome, (name, marker) in RPL136_POLICY_OUTCOME_MARKERS.items():
+        changed = dict(loaded)
+        changed[name] = changed.get(name, "").replace(marker, "")
+        mutation_errors = []
+        validate_rpl136_static_fixture(changed, mutation_errors)
+        expected_error = f"RPL-136 policy outcome missing: {outcome}"
+        if expected_error not in mutation_errors:
+            errors.append(f"RPL-136 outcome mutation was not detected: {outcome}")
+        tested += 1
+    if not errors:
+        print(f"RPL-136 outcome mutation regression: PASS ({tested} cases)")
+
+def missing_markers(source, markers):
+    """Return absent structural policy markers without changing the source text."""
+    return tuple(marker for marker in markers if marker not in source)
+
+def required_v52_markers(name):
+    return (
+        V52_MARKERS[name]
+        + V52_F4_RECOVERY_MARKERS.get(name, ())
+        + V52_SOURCE_FETCH_FALLBACK_MARKERS.get(name, ())
+        + V52_SOURCE_FETCH_BOUNDARY_MARKERS.get(name, ())
+        + V52_F4_PHASE_GATE_MARKERS.get(name, ())
+    )
+
+def missing_v52_markers(name, source):
+    return missing_markers(source, required_v52_markers(name))
+
+def validate_marker_deletion_regression(loaded, errors):
+    tested = 0
+    for name, markers in V52_F4_PHASE_GATE_MARKERS.items():
+        source = loaded.get(name)
+        if source is None:
+            continue
+        for marker in markers:
+            changed = source.replace(marker, "")
+            if marker not in missing_v52_markers(name, changed):
+                errors.append(f"v5.2 validator mutation regression failed: {name}: {marker}")
+            tested += 1
+    if not errors:
+        print(f"F4 validator mutation regression: PASS ({tested} cases)")
+
 
 LEAN_CHATGPT_BUDGET = 3500
 MIN_CHATGPT_BUDGET = 3000
@@ -188,15 +332,16 @@ V51_GIT_BLOBS = {"common_policy":"ddecdc225d4f0588bd6975c71d179187efc924ec","cha
 
 def validate_v52() -> int:
     errors = []
+    loaded = {}
     for name, path in V52_FILES.items():
         try:
             source = path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError) as exc:
             errors.append(f"missing or unreadable v5.2 {name}: {exc}")
             continue
-        for marker in V52_MARKERS[name] + V52_F4_RECOVERY_MARKERS.get(name, ()) + V52_SOURCE_FETCH_FALLBACK_MARKERS.get(name, ()) + V52_SOURCE_FETCH_BOUNDARY_MARKERS.get(name, ()):
-            if marker not in source:
-                errors.append(f"missing v5.2 {name} marker: {marker}")
+        loaded[name] = source
+        for marker in missing_v52_markers(name, source):
+            errors.append(f"missing v5.2 {name} marker: {marker}")
         if not source.endswith("\n"):
             errors.append(f"missing v5.2 {name} trailing newline")
         if name == "chatgpt":
@@ -208,6 +353,9 @@ def validate_v52() -> int:
                 errors.append(f"ChatGPT v5.2 exceeds lean budget: {size}")
             if size > MAX_CHATGPT_CODEPOINTS:
                 errors.append(f"ChatGPT v5.2 exceeds platform limit: {size}")
+    validate_rpl136_static_fixture(loaded, errors)
+    validate_rpl136_outcome_mutation_regression(loaded, errors)
+    validate_marker_deletion_regression(loaded, errors)
     for name, expected in V51_GIT_BLOBS.items():
         path = FILES[name]
         if not path.is_file():
