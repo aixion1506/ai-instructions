@@ -67,11 +67,23 @@ Runtime capability 없는 상황을 가짜 자동화로 포장하지 않는다. 
 - Coordinator는 Task별 `title/role/model/reasoning_effort/fast_mode/permissions/Primary Jira·Branch/Base·HEAD`를 **실제 실행기 생성 설정**으로 전달할 수 있는지 확인한다. `requested_*`와 실행기가 증명한 `effective_*`를 분리 기록하고, UI가 설정을 수락했어도 실효값 확인 불가 시 `effective=UNKNOWN`으로 처리한다. 지원 불가 시 `ROUTING_UNVERIFIED`로 보고하고 임의 재설정·대체·중복 Dispatch를 금지한다.
 - 모델 배정은 자동 설치·권한 부여가 아니다. Writer/Reviewer의 독립 Context·Sole Writer/Worktree·Owner Source Merge·Production Gate를 유지한다.
 
-## 5.3 F4 Goal Closure — 명시 호출형 실행
+## 5.3 F4 Goal Closure — 자동 의도 감지·명시 Skill 호출·승인 실행 분리
 
-`/F4` 또는 `$adaptive-goal-closure`는 승인된 Objective·Scope·AC에 대한 명시 호출로만 시작한다. 이는 제한된 실행 플레이북이지 Scheduler, Agent/Cloud Task 생성 API, 새 권한, 자동 Resume가 아니다.
+- `AUTO_INTENT=ON`: 자연어에서 기존 승인 Objective의 완료·재개 의도를 감지한다. 의도 분류만으로 Skill을 로드·호출하거나 실행·위임·원격 쓰기 권한을 얻지 않는다.
+- `AUTO_PREFLIGHT=DEVELOPMENT-only`: 개발 요청에는 READ-ONLY Preflight를 자동 적용한다. 일반 질문·설명·조회(READ)는 답변만 하며 Jira·Task·Writer를 만들거나 시작하지 않는다.
+- `AUTO_EXECUTION=GATED`: 기존 승인 Objective·Scope·AC, Primary Jira/Task, 단일 Writer/Worktree, 현재 Repo/PR/Base/HEAD, 쓰기 권한, 지원 Runtime이 모두 확인된 경우에만 이미 승인된 범위의 READY를 실행한다. 하나라도 없거나 UNKNOWN이면 `OWNER_GATE` 또는 `BLOCKED`로 격리하고 자동 실행하지 않는다. Jira·Task·Writer를 자동 생성하지 않는다.
+- `/F4` 또는 `$adaptive-goal-closure` Skill 호출은 계속 명시적으로 요구한다. 자연어 Intent는 Public PR #89 Skill을 암묵적으로 로드·호출하지 않는다. Skill이 없으면 승인된 범위에서 수동 F4 fallback을 사용하고 Discovery/Load/Apply 증거를 구분한다.
+- 격리 로컬 `TECHNICAL_CANDIDATE`는 `AUTO_EXECUTION` 대상 `READY`가 아닌 별도 수동 복구 단계다. 이미 승인된 Scope에서 비-Reviewer가 명시적으로 요청하면 고정 Source·별도 임시 디렉터리에서 Owner Recovery 추가 승인 없이 작성·검증할 수 있다. `AUTO_INTENT`는 이를 자동 시작하지 않으며, 후보는 Writer/Task 승계·Branch·원격 Write 권한을 주지 않는다.
+
+이는 제한된 실행 플레이북이지 Scheduler, Agent/Cloud Task 생성 API, 새 권한, 자동 Resume가 아니다.
 
 - Preflight에서 기존 Task/Writer 연결(현재 Task ID 또는 명시적 Handoff), Repo/PR/Base/HEAD, 권한·Runtime capability와 유효한 검증 증거를 확인·재사용하고 `READY`(현재 실행 가능), `REVIEW_ONLY`(고정 대상 읽기 전용 검토), `BLOCKED`(환경·의존성 차단), `OWNER_GATE`(결정·승인 필요)로 분류한다. 연결이 증명되지 않으면 Source Write를 시작하지 않는다. 승인된 Objective 안의 반복 중간 확인·승인은 줄이되 필수 Owner Gate는 생략하지 않는다.
+- **F4 단계별 Gate Inventory:** Objective·Scope·AC·Primary Jira/Task·Writer/Reviewer·Repo/Base/HEAD·Runtime/Skill·권한·Owner 승인을 Gate별로 기록한다. 각 항목은 `EvidenceRef·Scope/Revision·ObservedAt·Status·Owner·NextAction`을 보존하고 필수 Gate의 UNKNOWN/BLOCKED는 해당 단계 READY를 막는다.
+- **단계별 준비 상태:** `IMPLEMENTATION_READY`는 승인된 Scope/AC·Primary Jira·현재 AI-WRITE 권한·단일 Writer/Worktree·정확한 Repo/Base/HEAD·쓰기/검증 Runner를 확인한다. **Review 완료는 구현 선행조건이 아니다.** `REVIEW_READY`는 변경 후 고정 Base/HEAD·표적 테스트/CI·독립 Reviewer Context·요청/실효 모델·Reasoning·Fast 증거를 요구한다. 실효값 UNKNOWN이어도 기술 검수 결과는 별도 보존하되 정책 준수 PASS를 합성하지 않는다. `MERGE_READY`는 필수 CI·독립 Review·Finding 종료·정확한 Reviewed HEAD·Owner Merge 승인·발효 Governance Gate를 모두 확인한다. 필수 Gate가 UNKNOWN/BLOCKED면 `MERGE_READY`로 올리지 않고 Merge하지 않는다.
+- **Owner Decision Batch·재사용:** 승인 기록의 `DecisionRef·DecisionOwner·Action·Target·Scope/Revision`과 조건이 현재 요청에 유효할 때만 기존 승인을 재사용하며 같은 승인을 다시 묻지 않는다. 범위가 불명확하거나 달라지면 `OWNER_GATE`로 남긴다. 미승인 결정은 책임 Owner별로 대상·행동·추천안·위험·차단 영향을 묶어 제시한다.
+- **복구 상태 분리:** `LOCAL_HEAD_MISMATCH`는 Local/Remote/PR/Reviewed revision 불일치, `GIT_TRANSPORT_BLOCKED`는 Git 전송 경로 실패다. 두 상태 모두 Dirty Worktree를 보존하고 동일한 조건에서 재시도하지 않는다. `SOURCE_FETCH_UNAVAILABLE`는 Source 읽기 장애로 유지하며 `WRITER_UNKNOWN`과 합치지 않는다. `RUNTIME_DISPATCH_UNAVAILABLE`을 Dispatch 상태의 정식 이름으로 사용하고 이전 `DISPATCH_UNAVAILABLE`은 호환 alias다.
+- **Checkpoint 지문:** Gate·환경 식별자(비밀값 제외)·Repo/Revision·정규화한 오류 종류를 묶어 실패 지문을 기록하고, 재개 조건·Owner·NextAction을 보존한다. 동일 Checkpoint fingerprint 및 동일 환경·권한·Revision이면 재진단하지 않는다. 바뀐 관측 조건에 해당하는 Gate만 다시 확인하고 다른 독립 READY를 진행한다. Reviewed HEAD가 바뀌면 새 고정 검수를 요구한다.
+- **RPL-136 회귀 Fixture (합성 입력이며 현재 PR 상태의 증거가 아님):** PR #6에 DecisionRef로 Scope가 유효한 Owner Merge 승인, CI SUCCESS, 고정 HEAD 기술 Review 보고가 있고 Reviewer 실효 모델/Fast=UNKNOWN, Git Proxy 실패, Local HEAD 불일치, Dirty Worktree가 존재한다. 유효한 DecisionRef·Scope일 때만 승인을 재사용하고 재요청하지 않으며, 범위가 바뀌거나 불명확하면 `OWNER_GATE`로 둔다. Reviewer 정책 PASS를 합성하지 않고 Dirty Worktree를 보존한다. Proxy·Local HEAD·Reviewer Gate가 막힌 동안 `MERGE_READY`가 아니므로 Merge하지 않는다. 같은 환경·권한·Revision은 재진단하지 않고 Checkpoint 후 독립 READY를 계속한다. HEAD 변경 시 영향 Gate를 재평가하고 새 고정 검수를 요구한다.
 - 위험도에 따라 `QUICK`(저위험 문서·작은 Delta), `STANDARD`(일반 변경), `DEEP`(Auth·Secret·개인정보·DB·동시성·Cross-repo·배포)를 선택하고 표적 검증한다. 기존 PASS와 조건이 바뀌지 않은 동일 환경·권한 차단은 재사용하고 같은 조사를 반복하지 않는다.
 - 승인된 `READY`를 의존성 순서로 연속 처리한다. 막힌 항목은 Checkpoint에 격리하고 다른 독립 `READY`로 진행한다. Agent 재배치는 담당·Scope·비충돌 파일·지원 Runner가 확인된 경우에만 기존 승인 범위 안에서 한다. 중복 Writer·Task·Branch는 만들지 않는다.
 - **논리 Writer·Git Source·Codex Task 분리:** PR/Commit/Branch/Jira 담당자가 존재한다는 사실은 별도 Codex Cloud Task의 존재·Task ID·현재 점유 상태를 증명하지 않는다. GitHub Connector에서 생성한 Commit을 Codex Cloud Writer가 작성한 것으로 추정하지 않는다. 원 Task/세션 URL·ID, 명시적 Handoff, 실제 Worktree·Dirty Diff와 점유/종료 근거를 구분해 조회한다. 원 Task를 발견하지 못해도 같은 Primary Jira/PR을 임의 승계하지 않으며, 승인된 **다른 독립 READY**는 진행한다. 같은 Jira의 안전한 별도 브랜치 기술 후보·승계는 기존 Writer 중복·수정 경로·Owner 예외 승인 조건을 먼저 충족해야 하며, 원본 PR 브랜치 Write·Merge 권한으로 간주하지 않는다.
